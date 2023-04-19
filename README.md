@@ -1,6 +1,13 @@
 # @pagecall/react-native-webview
 
-A React Native module that provides a simple WebView component to integrate Pagecall's audio feature into your application. Note that video feature is not supported yet.
+A React Native module that provides a simple WebView component to integrate Pagecall's audio feature into your application. Note that video feature is not supported yet.  
+
+It uses following native SDKs  
+
+- [pagecall-android-sdk](https://github.com/pagecall/pagecall-android-sdk)
+- [pagecall-ios-sdk](https://github.com/pagecall/pagecall-ios-sdk)
+
+[Visit Pagecall](https://pagecall.com)
 
 ## Installation
 
