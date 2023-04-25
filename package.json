@@ -1,6 +1,6 @@
 {
   "name": "@pagecall/react-native-webview",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A React Native module that provides a simple WebView component to integrate Pagecall",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

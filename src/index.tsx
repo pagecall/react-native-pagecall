@@ -1,8 +1,12 @@
+import React from 'react';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 import {
   requireNativeComponent,
   UIManager,
   Platform,
   ViewStyle,
+  NativeModules,
+  findNodeHandle,
 } from 'react-native';
 
 const LINKING_ERROR =
@@ -11,17 +15,44 @@ const LINKING_ERROR =
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
 
-type PagecallWebProps = {
-  color: string;
+export type PagecallWebViewProps = {
   uri: string;
-  style: ViewStyle;
+  style?: ViewStyle;
+  ref?: React.Ref<React.ComponentClass<PagecallWebViewProps>>;
+};
+
+export type PagecallWebViewRef = {
+  sendMessage: (message: string) => void;
 };
 
 const ComponentName = 'PagecallWebviewView';
 
-export const PagecallWebView =
+const PagecallWebviewView =
   UIManager.getViewManagerConfig(ComponentName) != null
-    ? requireNativeComponent<PagecallWebProps>(ComponentName)
+    ? requireNativeComponent<PagecallWebViewProps>(ComponentName)
     : () => {
         throw new Error(LINKING_ERROR);
       };
+
+export const PagecallWebView = forwardRef<
+  PagecallWebViewRef,
+  PagecallWebViewProps
+>((props, ref) => {
+  const viewRef = useRef(null);
+
+  useImperativeHandle(ref, () => ({
+    sendMessage: (message: string) => {
+      if (
+        viewRef.current &&
+        NativeModules.PagecallWebviewViewManager?.sendMessage
+      ) {
+        const viewID = findNodeHandle(viewRef.current);
+        if (viewID) {
+          NativeModules.PagecallWebviewViewManager.sendMessage(viewID, message);
+        }
+      }
+    },
+  }));
+
+  return <PagecallWebviewView {...props} ref={viewRef} style={props.style} />;
+});
