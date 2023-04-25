@@ -60,12 +60,24 @@ repositories {
   google()
 }
 
+allprojects {
+    repositories {
+        maven {
+            url 'https://maven.pkg.github.com/pagecall/pagecall-android-sdk'
+            credentials {
+                username = project.findProperty("GITHUB_USERNAME") ?: System.getenv("GITHUB_USERNAME")
+                password = project.findProperty("GITHUB_TOKEN") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
 
 dependencies {
   // For < 0.71, this will be from the local maven repo
   // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
+  implementation 'com.pagecall:pagecall-android-sdk:0.0.3'
 }
 
 if (isNewArchitectureEnabled()) {
