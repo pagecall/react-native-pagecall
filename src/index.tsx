@@ -19,6 +19,8 @@ export type PagecallWebViewProps = {
   uri: string;
   style?: ViewStyle;
   ref?: React.Ref<React.ComponentClass<PagecallWebViewProps>>;
+  onMessage?: (message: string) => void;
+  onNativeEvent?: (event: { nativeEvent: { message: string } }) => void;
 };
 
 export type PagecallWebViewRef = {
@@ -54,5 +56,16 @@ export const PagecallWebView = forwardRef<
     },
   }));
 
-  return <PagecallWebviewView {...props} ref={viewRef} style={props.style} />;
+  return (
+    <PagecallWebviewView
+      {...props}
+      ref={viewRef}
+      style={props.style}
+      onNativeEvent={(event) => {
+        if (props.onMessage) {
+          props.onMessage(event.nativeEvent?.message);
+        }
+      }}
+    />
+  );
 });

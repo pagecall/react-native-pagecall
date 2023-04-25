@@ -15,12 +15,17 @@ export default function App() {
     webViewRef.current.sendMessage('Hello from React Native!');
   }, [webViewRef]);
 
+  const handleMessage = useCallback((message: string) => {
+    console.log('Received message from PagecallWebView:', message);
+  }, []);
+
   return (
     <View style={styles.container}>
       <PagecallWebView
         ref={webViewRef}
         style={styles.webView}
         uri="https://demo.pagecall.net/join/six-canvas/230417a?chime=0"
+        onMessage={handleMessage}
       />
       <View style={styles.buttonContainer}>
         <Button title="Send Message" onPress={handleButtonClick} />
