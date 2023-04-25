@@ -1,5 +1,5 @@
 {
-  "name": "@pagecall/react-native-webview",
+  "name": "react-native-pagecall",
   "version": "0.1.0",
   "description": "A React Native module that provides a simple WebView component to integrate Pagecall",
   "main": "lib/commonjs/index",
@@ -41,13 +41,13 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/pagecall/react-native-pagecall-webview",
-  "author": "Ryan Park <jurung@pplink.net> (https://github.com/pagecall)",
+  "repository": "https://github.com/pagecall/react-native-pagecall",
+  "author": "Pagecall <support@pagecall.com> (https://github.com/pagecall)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pagecall/react-native-pagecall-webview/issues"
+    "url": "https://github.com/pagecall/react-native-pagecall/issues"
   },
-  "homepage": "https://github.com/pagecall/react-native-pagecall-webview#readme",
+  "homepage": "https://github.com/pagecall/react-native-pagecall#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
@@ -68,8 +68,8 @@
     "pod-install": "^0.1.0",
     "prettier": "^2.0.5",
     "react": "18.2.0",
-    "react-native": "0.71.6",
-    "react-native-builder-bob": "^0.20.4",
+    "react-native": "0.71.7",
+    "react-native-builder-bob": "^0.20.0",
     "release-it": "^15.0.0",
     "typescript": "^4.5.2"
   },

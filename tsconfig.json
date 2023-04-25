@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "react-native-pagecall-webview": ["./src/index"]
+      "react-native-pagecall": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,

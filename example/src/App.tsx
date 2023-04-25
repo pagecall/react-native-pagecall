@@ -1,16 +1,12 @@
 import * as React from 'react';
 
 import { StyleSheet, View } from 'react-native';
-import { PagecallWebView } from '@pagecall/react-native-webview';
+import { PagecallView } from 'react-native-pagecall';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <PagecallWebView
-        color="#32a852"
-        style={styles.box}
-        uri="https://demo.pagecall.net/join/six-canvas/230417a?chime=0"
-      />
+      <PagecallView color="#32a852" style={styles.box} />
     </View>
   );
 }

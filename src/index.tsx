@@ -6,22 +6,21 @@ import {
 } from 'react-native';
 
 const LINKING_ERROR =
-  `The package 'react-native-pagecall-webview' doesn't seem to be linked. Make sure: \n\n` +
+  `The package 'react-native-pagecall' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
 
-type PagecallWebProps = {
+type PagecallProps = {
   color: string;
-  uri: string;
   style: ViewStyle;
 };
 
-const ComponentName = 'PagecallWebviewView';
+const ComponentName = 'PagecallView';
 
-export const PagecallWebView =
+export const PagecallView =
   UIManager.getViewManagerConfig(ComponentName) != null
-    ? requireNativeComponent<PagecallWebProps>(ComponentName)
+    ? requireNativeComponent<PagecallProps>(ComponentName)
     : () => {
         throw new Error(LINKING_ERROR);
       };
