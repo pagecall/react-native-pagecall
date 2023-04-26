@@ -6,8 +6,8 @@ class PagecallWebviewViewManager: RCTViewManager {
 
   override func view() -> (PagecallWebviewView) {
     let view = PagecallWebviewView()
-    self.pagecallView = view;
-    return view;
+    self.pagecallView = view
+    return view
   }
 
   @objc override static func requiresMainQueueSetup() -> Bool {
@@ -25,8 +25,10 @@ class PagecallWebviewViewManager: RCTViewManager {
   }
 }
 
-class PagecallWebviewView : UIView {
+class PagecallWebviewView: UIView, PagecallWebViewDelegate {
+
   let webView = Pagecall.PagecallWebView()
+  var stopListen: (() -> Void)?
 
   @objc var uri: String = "" {
     didSet {
@@ -43,25 +45,21 @@ class PagecallWebviewView : UIView {
     webView.topAnchor.constraint(equalTo: topAnchor).isActive = true
     webView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
     webView.translatesAutoresizingMaskIntoConstraints = false
+    webView.delegate = self
   }
 
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
 
-  func hexStringToUIColor(hexColor: String) -> UIColor {
-    let stringScanner = Scanner(string: hexColor)
-
-    if(hexColor.hasPrefix("#")) {
-      stringScanner.scanLocation = 1
-    }
-    var color: UInt32 = 0
-    stringScanner.scanHexInt32(&color)
-
-    let r = CGFloat(Int(color >> 16) & 0x000000FF)
-    let g = CGFloat(Int(color >> 8) & 0x000000FF)
-    let b = CGFloat(Int(color) & 0x000000FF)
-
-    return UIColor(red: r / 255.0, green: g / 255.0, blue: b / 255.0, alpha: 1)
+  func pagecallDidLoad(_ webView: Pagecall.PagecallWebView) {
+      stopListen?()
+      stopListen = webView.listenMessage { message in
+         print("#### listenMessage: " + message)
+         // send event to the react component here!!
+      }
+  }
+  deinit {
+    stopListen?()
   }
 }
