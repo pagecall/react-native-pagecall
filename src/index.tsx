@@ -20,7 +20,6 @@ export type PagecallWebViewProps = {
   style?: ViewStyle;
   ref?: React.Ref<React.ComponentClass<PagecallWebViewProps>>;
   onMessage?: (message: string) => void;
-  onNativeEvent?: (event: { nativeEvent: { message: string } }) => void;
 };
 
 export type PagecallWebViewRef = {
@@ -31,7 +30,11 @@ const ComponentName = 'PagecallWebviewView';
 
 const PagecallWebviewView =
   UIManager.getViewManagerConfig(ComponentName) != null
-    ? requireNativeComponent<PagecallWebViewProps>(ComponentName)
+    ? requireNativeComponent<
+        PagecallWebViewProps & {
+          onNativeEvent?: (event: { nativeEvent: { message: string } }) => void;
+        }
+      >(ComponentName)
     : () => {
         throw new Error(LINKING_ERROR);
       };
