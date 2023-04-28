@@ -1,6 +1,9 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
+# activate this line if you want to use local pod
+# pod 'Pagecall', :path => '../../../pagecall-ios-sdk'
+
 platform :ios, '14.0'
 prepare_react_native_project!
 

@@ -5,7 +5,7 @@ import { StyleSheet, View, Button } from 'react-native';
 import { PagecallView } from 'react-native-pagecall';
 import type { PagecallViewRef } from 'react-native-pagecall';
 
-const uri = "https://app.pagecall.com/meet?room_id=644788c75e874a1f1ce27bd4"
+const uri = 'https://demo.pagecall.net/join/six-canvas/230417a?chime=0';
 
 export default function App() {
   const viewRef = useRef<PagecallViewRef>(null);
@@ -21,7 +21,12 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <PagecallView uri={uri} style={styles.pagecallView} ref={viewRef} onMessage={handleMessage} />
+      <PagecallView
+        uri={uri}
+        style={styles.pagecallView}
+        ref={viewRef}
+        onMessage={handleMessage}
+      />
       <View style={styles.buttonContainer}>
         <Button title="Send Message" onPress={handleButtonClick} />
       </View>

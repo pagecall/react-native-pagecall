@@ -25,9 +25,11 @@ class PagecallViewManager: RCTViewManager {
     }
 }
 
-class PagecallView: UIView {
+class PagecallView: UIView, PagecallWebViewDelegate {
+    
     let webView = PagecallWebView()
-
+    var stopListen: (() -> Void)?
+    
     @objc var uri: String = "" {
         didSet {
             guard let url = URL(string: uri) else { return }
@@ -38,6 +40,7 @@ class PagecallView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.addSubview(webView)
+        webView.delegate = self
         webView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         webView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         webView.topAnchor.constraint(equalTo: topAnchor).isActive = true
@@ -47,5 +50,16 @@ class PagecallView: UIView {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc var onNativeEvent: RCTDirectEventBlock?
+    func pagecallDidLoad(_ webView: PagecallWebView) {
+        stopListen?()
+        stopListen = webView.listenMessage { message in
+            self.onNativeEvent?(["message": message])
+        }
+    }
+    deinit {
+        stopListen?()
     }
 }

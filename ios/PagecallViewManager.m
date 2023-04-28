@@ -3,6 +3,7 @@
 @interface RCT_EXTERN_MODULE(PagecallViewManager, RCTViewManager)
 
 RCT_EXPORT_VIEW_PROPERTY(uri, NSString)
+RCT_EXPORT_VIEW_PROPERTY(onNativeEvent, RCTDirectEventBlock)
 RCT_EXTERN_METHOD(sendMessage:(nonnull NSNumber *)viewID message:(NSString *)message)
 
 @end
