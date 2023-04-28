@@ -78,12 +78,15 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation 'com.pagecall:pagecall-android-sdk:0.0.3'
+  // activate below line if you want to use local sdk
+  // implementation project(':pagecall-android-sdk')
+
 }
 
 if (isNewArchitectureEnabled()) {
   react {
     jsRootDir = file("../src/")
     libraryName = "PagecallView"
-    codegenJavaPackageName = "com.pagecall"
+    codegenJavaPackageName = "com.pagecallview"
   }
 }

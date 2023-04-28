@@ -1,4 +1,4 @@
-package com.pagecall;
+package com.pagecallview;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
