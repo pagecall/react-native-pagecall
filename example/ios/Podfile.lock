@@ -78,7 +78,7 @@ PODS:
   - hermes-engine/Pre-built (0.71.6)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.1100)
-  - Pagecall (0.0.7):
+  - Pagecall (0.0.8):
     - Sentry (= 8.5.0)
   - RCT-Folly (2021.07.22.00):
     - boost
@@ -331,8 +331,8 @@ PODS:
   - React-jsinspector (0.71.6)
   - React-logger (0.71.6):
     - glog
-  - react-native-pagecall-webview (0.1.1):
-    - Pagecall (= 0.0.7)
+  - react-native-pagecall-webview (0.1.2):
+    - Pagecall (= 0.0.8)
     - React-Core
   - React-perflogger (0.71.6)
   - React-RCTActionSheet (0.71.6):
@@ -459,7 +459,6 @@ DEPENDENCIES:
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
   - libevent (~> 2.1.12)
   - OpenSSL-Universal (= 1.1.1100)
-  - Pagecall (from `../../../pagecall-ios-sdk`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -507,6 +506,7 @@ SPEC REPOS:
     - fmt
     - libevent
     - OpenSSL-Universal
+    - Pagecall
     - Sentry
     - SentryPrivate
     - SocketRocket
@@ -525,8 +525,6 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
-  Pagecall:
-    :path: "../../../pagecall-ios-sdk"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -606,7 +604,7 @@ SPEC CHECKSUMS:
   hermes-engine: b434cea529ad0152c56c7cb6486b0c4c0b23b5de
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
-  Pagecall: eeca140255ec1463596a7e486413e8e6a50c018d
+  Pagecall: 56977d1c137443642e2f51d90a755659c44f16e2
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: 5c6fd63b03abb06947d348dadac51c93e3485bd8
   RCTTypeSafety: 1c66daedd66f674e39ce9f40782f0d490c78b175
@@ -621,7 +619,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 7894956638ff3e00819dd3f9f6f4a84da38f2409
   React-jsinspector: d5ce2ef3eb8fd30c28389d0bc577918c70821bd6
   React-logger: 9332c3e7b4ef007a0211c0a9868253aac3e1da82
-  react-native-pagecall-webview: 65b615e1f384018b5628a0518524e629fbb3d9f7
+  react-native-pagecall-webview: 7079de6f328ae7c8c828b6f55ce7d4f8724ead5a
   React-perflogger: 43392072a5b867a504e2b4857606f8fc5a403d7f
   React-RCTActionSheet: c7b67c125bebeda9fb19fc7b200d85cb9d6899c4
   React-RCTAnimation: c2de79906f607986633a7114bee44854e4c7e2f5
@@ -641,6 +639,6 @@ SPEC CHECKSUMS:
   Yoga: ba09b6b11e6139e3df8229238aa794205ca6a02a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: ab842256253b8da078149c68153d62d1bac9225b
+PODFILE CHECKSUM: 7600a3ee47a01712d7742226e8de92de09f92dec
 
 COCOAPODS: 1.12.0

@@ -15,25 +15,34 @@ const LINKING_ERROR =
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
 
-export type PagecallWebViewProps = {
-  uri: string;
-  style?: ViewStyle;
-  ref?: React.Ref<React.ComponentClass<PagecallWebViewProps>>;
-  onMessage?: (message: string) => void;
-};
-
 export type PagecallWebViewRef = {
   sendMessage: (message: string) => void;
 };
+
+type PagecallWebViewSharedProps = {
+  uri: string;
+  style?: ViewStyle;
+  ref?: React.Ref<React.ComponentClass<PagecallWebViewProps>>;
+};
+
+type PagecallWebViewExternalProps = {
+  uri: string;
+  style?: ViewStyle;
+  onMessage?: (message: string) => void;
+};
+
+type PagecallWebViewInternalProps = {
+  onNativeEvent?: (event: { nativeEvent: { message: string } }) => void;
+};
+export type PagecallWebViewProps = PagecallWebViewSharedProps &
+  PagecallWebViewExternalProps;
 
 const ComponentName = 'PagecallWebviewView';
 
 const PagecallWebviewView =
   UIManager.getViewManagerConfig(ComponentName) != null
     ? requireNativeComponent<
-        PagecallWebViewProps & {
-          onNativeEvent?: (event: { nativeEvent: { message: string } }) => void;
-        }
+        PagecallWebViewSharedProps & PagecallWebViewInternalProps
       >(ComponentName)
     : () => {
         throw new Error(LINKING_ERROR);
