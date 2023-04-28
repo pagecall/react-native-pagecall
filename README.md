@@ -1,6 +1,13 @@
 # react-native-pagecall
 
-Integrate Pagecall into your service
+A React Native module that provides a simple WebView component to integrate Pagecall's audio feature into your application. Note that video feature is not supported yet.  
+
+It uses following native SDKs  
+
+- [pagecall-android-sdk](https://github.com/pagecall/pagecall-android-sdk)
+- [pagecall-ios-sdk](https://github.com/pagecall/pagecall-ios-sdk)
+
+[Visit Pagecall](https://pagecall.com)
 
 ## Installation
 
@@ -8,24 +15,88 @@ Integrate Pagecall into your service
 npm install react-native-pagecall
 ```
 
-## Usage
+or 
 
-```js
-import { PagecallView } from "react-native-pagecall";
-
-// ...
-
-<PagecallView color="tomato" />
+```sh
+yarn add react-native-pagecall
 ```
 
-## Contributing
+## Usage
 
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+```jsx
+import React from 'react';
+import { useRef, useCallback } from 'react';
 
-## License
+import { StyleSheet, View, Button } from 'react-native';
+import { PagecallView } from 'react-native-pagecall';
+import type { PagecallViewRef } from 'react-native-pagecall';
 
-MIT
+const uri = 'https://demo.pagecall.net/join/six-canvas/230417a?chime=0';
 
----
+export default function App() {
+  const viewRef = useRef<PagecallViewRef>(null);
 
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
+  const handleButtonClick = useCallback(() => {
+    if (!viewRef.current) return;
+    viewRef.current.sendMessage('Hello from React Native!');
+  }, [viewRef]);
+
+  const handleMessage = useCallback((message: string) => {
+    console.log('Received message from PagecallView:', message);
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <PagecallView
+        uri={uri}
+        style={styles.pagecallView}
+        ref={viewRef}
+        onMessage={handleMessage}
+      />
+      <View style={styles.buttonContainer}>
+        <Button title="Send Message" onPress={handleButtonClick} />
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  pagecallView: {
+    flex: 1,
+  },
+  buttonContainer: {
+    marginBottom: 16,
+  },
+});
+```
+
+## Android setup
+
+To use this module in an Android project, you need to add the dependency of `pagecall-android-sdk` manually:  
+
+In your android/app/build.gradle file, add the following:  
+
+```groovy
+allprojects {
+    repositories {
+        maven {
+            url 'https://maven.pkg.github.com/pagecall/pagecall-android-sdk'
+            credentials {
+                username = project.findProperty("GITHUB_USERNAME") ?: System.getenv("GITHUB_USERNAME")
+                password = project.findProperty("GITHUB_TOKEN") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+
+dependencies {
+    ...
+    implementation 'com.pagecall:pagecall-android-sdk:0.0.3'
+}
+
+```
+
+Ensure that you have a valid GitHub username and personal access token configured in your environment variables or project properties.
