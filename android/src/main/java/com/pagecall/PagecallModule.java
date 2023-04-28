@@ -8,7 +8,7 @@ import com.facebook.react.uimanager.UIManagerModule;
 import com.pagecall.PagecallWebView;
 
 public class PagecallModule extends ReactContextBaseJavaModule {
-  private static final String REACT_CLASS = "PagecallModule";
+  private static final String REACT_CLASS = "PagecallViewManager";
   public PagecallModule(ReactApplicationContext reactContext) {
     super(reactContext);
   }
