@@ -5,6 +5,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.react.common.MapBuilder;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
@@ -16,6 +17,8 @@ import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 
 import com.pagecall.PagecallWebView;
+
+import java.util.Map;
 
 public class PagecallViewManager extends SimpleViewManager<View> {
   public static final String REACT_CLASS = "PagecallView";
@@ -56,5 +59,12 @@ public class PagecallViewManager extends SimpleViewManager<View> {
   public void setUri(PagecallWebView view, String uri) {
     PagecallWebView webView = (PagecallWebView) view;
     webView.loadUrl(uri);
+  }
+
+  @Override
+  public Map<String, Object> getExportedCustomDirectEventTypeConstants() {
+    return MapBuilder.<String, Object>builder()
+      .put("onNativeEvent", MapBuilder.of("registrationName", "onNativeEvent"))
+      .build();
   }
 }

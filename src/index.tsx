@@ -68,7 +68,12 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
         style={props.style}
         onNativeEvent={(event) => {
           if (props.onMessage) {
-            props.onMessage(event.nativeEvent?.message);
+            const message = event.nativeEvent?.message;
+            if (typeof message !== 'string') {
+              console.warn('message is not string. event: ', event);
+              return;
+            }
+            props.onMessage(message);
           }
         }}
       />
