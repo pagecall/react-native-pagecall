@@ -178,7 +178,7 @@ dependencies {
         implementation jscFlavor
     }
 
-    implementation 'com.pagecall:pagecall-android-sdk:0.0.3'
+    implementation 'com.pagecall:pagecall-android-sdk:0.0.12'
     // activate when you use local sdk
     // implementation project(':pagecall-android-sdk')
 
