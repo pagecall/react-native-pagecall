@@ -78,8 +78,7 @@ PODS:
   - hermes-engine/Pre-built (0.71.7)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.1100)
-  - Pagecall (0.0.9):
-    - Sentry (= 8.5.0)
+  - Pagecall (0.0.10)
   - RCT-Folly (2021.07.22.00):
     - boost
     - DoubleConversion
@@ -331,8 +330,8 @@ PODS:
   - React-jsinspector (0.71.7)
   - React-logger (0.71.7):
     - glog
-  - react-native-pagecall (0.1.0):
-    - Pagecall (= 0.0.9)
+  - react-native-pagecall (2.0.1):
+    - Pagecall (~> 0.0.10)
     - React-Core
   - React-perflogger (0.71.7)
   - React-RCTActionSheet (0.71.7):
@@ -418,12 +417,6 @@ PODS:
     - React-jsi (= 0.71.7)
     - React-logger (= 0.71.7)
     - React-perflogger (= 0.71.7)
-  - Sentry (8.5.0):
-    - Sentry/Core (= 8.5.0)
-    - SentryPrivate (= 8.5.0)
-  - Sentry/Core (8.5.0):
-    - SentryPrivate (= 8.5.0)
-  - SentryPrivate (8.5.0)
   - SocketRocket (0.6.0)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -507,8 +500,6 @@ SPEC REPOS:
     - libevent
     - OpenSSL-Universal
     - Pagecall
-    - Sentry
-    - SentryPrivate
     - SocketRocket
     - YogaKit
 
@@ -604,7 +595,7 @@ SPEC CHECKSUMS:
   hermes-engine: 4438d2b8bf8bebaba1b1ac0451160bab59e491f8
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
-  Pagecall: fe1d8775fc12eb2fd0f9c56f5cc61748b1fcba93
+  Pagecall: c99d0a268a37dcdbd79239aa48f59931ff171067
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: 5a4a30ac20c86eeadd6844a9328f78d4168cf9b2
   RCTTypeSafety: 279fc5861a89f0f37db3a585f27f971485b4b734
@@ -619,7 +610,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: eaa5f71eb8f6861cf0e57f1a0f52aeb020d9e18e
   React-jsinspector: 9885f6f94d231b95a739ef7bb50536fb87ce7539
   React-logger: 3f8ebad1be1bf3299d1ab6d7f971802d7395c7ef
-  react-native-pagecall: 2166831e828821d9ced332a2fe71e317b532b421
+  react-native-pagecall: 8e68ca129cb24e96fc250ee9eb07c650adb794df
   React-perflogger: 2d505bbe298e3b7bacdd9e542b15535be07220f6
   React-RCTActionSheet: 0e96e4560bd733c9b37efbf68f5b1a47615892fb
   React-RCTAnimation: fd138e26f120371c87e406745a27535e2c8a04ef
@@ -633,8 +624,6 @@ SPEC CHECKSUMS:
   React-RCTVibration: 08f132cad9896458776f37c112e71d60aef1c6ae
   React-runtimeexecutor: c5c89f8f543842dd864b63ded1b0bbb9c9445328
   ReactCommon: dbfbe2f7f3c5ce4ce44f43f2fd0d5950d1eb67c5
-  Sentry: 3be3f42e40e5a552935552e115744d5810a216d9
-  SentryPrivate: 8c9463280e282527f938d1a5d1d60f8e10ff279b
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   Yoga: d56980c8914db0b51692f55533409e844b66133c
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
