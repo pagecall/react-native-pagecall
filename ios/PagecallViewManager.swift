@@ -26,10 +26,10 @@ class PagecallViewManager: RCTViewManager {
 }
 
 class PagecallView: UIView, PagecallWebViewDelegate {
-    
+
     let webView = PagecallWebView()
     var stopListen: (() -> Void)?
-    
+
     @objc var uri: String = "" {
         didSet {
             guard let url = URL(string: uri) else { return }
@@ -51,7 +51,7 @@ class PagecallView: UIView, PagecallWebViewDelegate {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     @objc var onNativeEvent: RCTDirectEventBlock?
     func pagecallDidLoad(_ webView: PagecallWebView) {
         stopListen?()
