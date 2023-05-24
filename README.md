@@ -1,8 +1,8 @@
 # react-native-pagecall
 
-A React Native module that provides a simple WebView component to integrate Pagecall's audio feature into your application. Note that video feature is not supported yet.  
+A React Native module that provides a simple WebView component to integrate Pagecall's audio feature into your application. Note that video feature is not supported yet.
 
-It uses following native SDKs  
+It uses following native SDKs
 
 - [pagecall-android-sdk](https://github.com/pagecall/pagecall-android-sdk)
 - [pagecall-ios-sdk](https://github.com/pagecall/pagecall-ios-sdk)
@@ -15,7 +15,7 @@ It uses following native SDKs
 npm install react-native-pagecall
 ```
 
-or 
+or
 
 ```sh
 yarn add react-native-pagecall
@@ -75,9 +75,9 @@ const styles = StyleSheet.create({
 
 ## Android setup
 
-To use this module in an Android project, you need to add the dependency of `pagecall-android-sdk` manually:  
+To use this module in an Android project, you need to add the dependency of `pagecall-android-sdk` manually:
 
-In your android/app/build.gradle file, add the following:  
+In your android/app/build.gradle file, add the following:
 
 ```groovy
 allprojects {
