@@ -1,6 +1,5 @@
 package com.pagecallview;
 
-import android.graphics.Color;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -8,11 +7,9 @@ import androidx.annotation.NonNull;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
-import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 
@@ -23,11 +20,8 @@ import java.util.Map;
 public class PagecallViewManager extends SimpleViewManager<View> {
   public static final String REACT_CLASS = "PagecallView";
 
-  private ReactApplicationContext reactContext;
-
   public PagecallViewManager(ReactApplicationContext reactContext) {
     super();
-    this.reactContext = reactContext;
   }
 
   @Override
@@ -40,7 +34,7 @@ public class PagecallViewManager extends SimpleViewManager<View> {
   @NonNull
   public View createViewInstance(ThemedReactContext reactContext) {
     PagecallWebView.setWebContentsDebuggingEnabled(true);
-    PagecallWebView webView = new PagecallWebView(reactContext);
+    PagecallWebView webView = new PagecallWebView(reactContext.getCurrentActivity());
     webView.listenMessage(message -> {
       reactContext
         .getJSModule(RCTEventEmitter.class)
@@ -57,8 +51,7 @@ public class PagecallViewManager extends SimpleViewManager<View> {
 
   @ReactProp(name = "uri")
   public void setUri(PagecallWebView view, String uri) {
-    PagecallWebView webView = (PagecallWebView) view;
-    webView.loadUrl(uri);
+    view.loadUrl(uri);
   }
 
   @Override
