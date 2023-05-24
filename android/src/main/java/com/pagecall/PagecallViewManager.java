@@ -34,7 +34,13 @@ public class PagecallViewManager extends SimpleViewManager<View> {
   @NonNull
   public View createViewInstance(ThemedReactContext reactContext) {
     PagecallWebView.setWebContentsDebuggingEnabled(true);
-    PagecallWebView webView = new PagecallWebView(reactContext.getCurrentActivity());
+    PagecallWebView webView = new PagecallWebView(reactContext.getCurrentActivity()) {
+      @Override
+      protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        this.destroy();
+      }
+    };
     webView.listenMessage(message -> {
       reactContext
         .getJSModule(RCTEventEmitter.class)

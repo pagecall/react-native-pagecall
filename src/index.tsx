@@ -7,7 +7,8 @@ import {
   NativeModules,
   findNodeHandle,
 } from 'react-native';
-import { forwardRef, useRef, useImperativeHandle } from 'react';
+import type { HostComponent } from 'react-native';
+import { forwardRef, useRef, useImperativeHandle, useEffect } from 'react';
 
 const LINKING_ERROR =
   `The package 'react-native-pagecall' doesn't seem to be linked. Make sure: \n\n` +
@@ -46,20 +47,35 @@ const PagecallViewView =
         throw new Error(LINKING_ERROR);
       };
 
+let mountCount = 0;
+
 export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
   (props, ref) => {
-    const viewRef = useRef(null);
+    const viewRef = useRef<HostComponent<PagecallViewProps>>(null);
 
     useImperativeHandle(ref, () => ({
       sendMessage: (message: string) => {
-        if (viewRef.current && NativeModules.PagecallViewManager?.sendMessage) {
-          const viewID = findNodeHandle(viewRef.current);
+        const view = viewRef.current;
+        if (view) {
+          const viewID = findNodeHandle(view);
           if (viewID) {
-            NativeModules.PagecallViewManager.sendMessage(viewID, message);
+            NativeModules.PagecallViewManager?.sendMessage?.(viewID, message);
           }
         }
       },
     }));
+
+    useEffect(() => {
+      mountCount += 1;
+      if (mountCount > 1)
+        console.error(
+          'PagecallView is not supposed to be rendered twice or more at the same time. Please make sure the previous view is unmounted.'
+        );
+      return () => {
+        NativeModules.PagecallViewManager?.dispose?.();
+        mountCount -= 1;
+      };
+    }, []);
 
     return (
       <PagecallViewView
