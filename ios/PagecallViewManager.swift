@@ -16,11 +16,16 @@ class PagecallViewManager: RCTViewManager {
 
     @objc(sendMessage:message:)
     func sendMessage(_ viewID: NSNumber, message: String) {
-        let uiManager = bridge.module(for: RCTUIManager.self) as! RCTUIManager
         DispatchQueue.main.async {
-            if let pagecallView = uiManager.view(forReactTag: viewID) as? PagecallView {
-                pagecallView.webView.sendMessage(message: message, completionHandler: nil)
-            }
+            self.pagecallView?.webView.sendMessage(message: message, completionHandler: nil)
+        }
+    }
+
+    @objc(dispose)
+    func dispose() {
+        DispatchQueue.main.async {
+            self.pagecallView?.dispose()
+            self.pagecallView = nil
         }
     }
 }
@@ -28,7 +33,7 @@ class PagecallViewManager: RCTViewManager {
 class PagecallView: UIView, PagecallWebViewDelegate {
 
     let webView = PagecallWebView()
-    var stopListen: (() -> Void)?
+    private var stopListen: (() -> Void)?
 
     @objc var uri: String = "" {
         didSet {
@@ -54,12 +59,21 @@ class PagecallView: UIView, PagecallWebViewDelegate {
 
     @objc var onNativeEvent: RCTDirectEventBlock?
     func pagecallDidLoad(_ webView: PagecallWebView) {
-        stopListen?()
-        stopListen = webView.listenMessage { message in
-            self.onNativeEvent?(["message": message])
+        DispatchQueue.main.async {
+            self.stopListen?()
+            self.stopListen = webView.listenMessage { message in
+                self.onNativeEvent?(["message": message])
+            }
         }
     }
+
+    func dispose() {
+        self.stopListen?()
+        self.stopListen = nil
+        webView.dispose()
+    }
+
     deinit {
-        stopListen?()
+        dispose()
     }
 }
