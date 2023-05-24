@@ -13,12 +13,11 @@ Pod::Spec.new do |s|
 
   s.platforms    = { :ios => "14.0" }
   s.source       = { :git => "https://github.com/pagecall/react-native-pagecall.git", :tag => "#{s.version}" }
-  s.source       = { :git => "https://github.com/pagecall/pagecall-ios-sdk.git" }
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"
 
   s.dependency "React-Core"
-  s.dependency "Pagecall", '~> 0.0.11'
+  s.dependency "Pagecall", '~> 0.0.12'
 
   # Don't install the dependencies when we run `pod install` in the old architecture.
   if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then
