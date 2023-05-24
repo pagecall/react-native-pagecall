@@ -1,7 +1,8 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
 
-import { StyleSheet, View, Button } from 'react-native';
+import { View, Button } from 'react-native';
 import { PagecallView } from 'react-native-pagecall';
 import type { PagecallViewRef } from 'react-native-pagecall';
 
@@ -9,6 +10,7 @@ const uri = 'https://demo.pagecall.net/join/six-canvas/230417a?chime=0';
 
 export default function App() {
   const viewRef = useRef<PagecallViewRef>(null);
+  const [isOpen, setOpen] = useState(false);
 
   const handleButtonClick = useCallback(() => {
     if (!viewRef.current) return;
@@ -20,28 +22,25 @@ export default function App() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <PagecallView
-        uri={uri}
-        style={styles.pagecallView}
-        ref={viewRef}
-        onMessage={handleMessage}
-      />
-      <View style={styles.buttonContainer}>
+    <View style={{ flex: 1 }}>
+      {isOpen ? (
+        <PagecallView
+          uri={uri}
+          style={{ flex: 1 }}
+          ref={viewRef}
+          onMessage={handleMessage}
+        />
+      ) : (
+        <View style={{ flex: 1, justifyContent: 'center' }}>
+          <Button title="Open" onPress={() => setOpen(true)} />
+        </View>
+      )}
+      <View
+        style={{ padding: 20, justifyContent: 'center', flexDirection: 'row' }}
+      >
         <Button title="Send Message" onPress={handleButtonClick} />
+        <Button title="Close" onPress={() => setOpen(false)} />
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  pagecallView: {
-    flex: 1,
-  },
-  buttonContainer: {
-    marginBottom: 16,
-  },
-});
