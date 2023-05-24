@@ -94,7 +94,14 @@
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
-    ]
+    ],
+    "rules": {
+      "type-enum": [
+        1,
+        "always",
+        ["feat", "fix", "docs", "refactor", "test", "revert", "release", "chore"]
+      ]
+    }
   },
   "release-it": {
     "git": {
