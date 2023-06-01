@@ -30,7 +30,10 @@ class PagecallViewManager: RCTViewManager {
     }
 }
 
-class PagecallView: UIView, PagecallWebViewDelegate {
+class PagecallView: UIView, PagecallDelegate {
+    func pagecallDidTerminate(_ view: Pagecall.PagecallWebView, reason: Pagecall.TerminationReason) {
+        // TODO
+    }
 
     let webView = PagecallWebView()
     private var stopListen: (() -> Void)?
@@ -70,7 +73,6 @@ class PagecallView: UIView, PagecallWebViewDelegate {
     func dispose() {
         self.stopListen?()
         self.stopListen = nil
-        webView.dispose()
     }
 
     deinit {
