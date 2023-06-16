@@ -8,7 +8,7 @@ import {
   findNodeHandle,
 } from 'react-native';
 import type { HostComponent } from 'react-native';
-import { forwardRef, useRef, useImperativeHandle, useEffect } from 'react';
+import { forwardRef, useRef, useImperativeHandle, useEffect, useCallback } from 'react';
 
 const LINKING_ERROR =
   `The package 'react-native-pagecall' doesn't seem to be linked. Make sure: \n\n` +
@@ -77,21 +77,23 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       };
     }, []);
 
+    const onNativeEvent = useCallback((event) => {
+      if (props.onMessage) {
+        const message = event.nativeEvent?.message;
+        if (typeof message !== 'string') {
+          console.warn('message is not string. event: ', event);
+          return;
+        }
+        props.onMessage(message);
+      }
+    }, [props.onMessage]);
+
     return (
       <PagecallViewView
         {...props}
         ref={viewRef}
         style={props.style}
-        onNativeEvent={(event) => {
-          if (props.onMessage) {
-            const message = event.nativeEvent?.message;
-            if (typeof message !== 'string') {
-              console.warn('message is not string. event: ', event);
-              return;
-            }
-            props.onMessage(message);
-          }
-        }}
+        onNativeEvent={onNativeEvent}
       />
     );
   }
