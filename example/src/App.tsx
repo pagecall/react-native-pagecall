@@ -3,7 +3,7 @@ import React from 'react';
 import { useRef, useCallback, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { View, Button, TextInput, Text } from 'react-native';
+import { SafeAreaView, View, Button, TextInput, Text } from 'react-native';
 import { PagecallView } from 'react-native-pagecall';
 import type { PagecallViewRef } from 'react-native-pagecall';
 
@@ -100,7 +100,7 @@ export default function App() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <PagecallView
         roomId={roomId}
         mode={mode}
@@ -126,6 +126,6 @@ export default function App() {
         <Button title="Send Message" onPress={handleButtonClick} />
         <Button title="Close" onPress={() => setMode(null)} />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
