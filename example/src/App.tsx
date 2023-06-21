@@ -1,4 +1,4 @@
-/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-native/no-inline-styles, @typescript-eslint/no-shadow */
 import React from 'react';
 import { useRef, useCallback, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,7 +7,14 @@ import { View, Button, TextInput, Text } from 'react-native';
 import { PagecallView } from 'react-native-pagecall';
 import type { PagecallViewRef } from 'react-native-pagecall';
 
-const textInputStyle = { borderWidth: 1, marginTop: 4, padding: 8, width: 280, borderRadius: 8, marginBottom: 16 }
+const textInputStyle = {
+  borderWidth: 1,
+  marginTop: 4,
+  padding: 8,
+  width: 280,
+  borderRadius: 8,
+  marginBottom: 16,
+};
 export default function App() {
   const viewRef = useRef<PagecallViewRef>(null);
   const [roomId, setRoomId] = useState('');
@@ -28,9 +35,13 @@ export default function App() {
   useEffect(() => {
     if (!mode) return;
     Promise.all([
-      roomId ? AsyncStorage.setItem('roomId', roomId) : AsyncStorage.removeItem('roomId'),
-      build ? AsyncStorage.setItem('build', build) : AsyncStorage.removeItem('build')
-    ]).catch(console.error)
+      roomId
+        ? AsyncStorage.setItem('roomId', roomId)
+        : AsyncStorage.removeItem('roomId'),
+      build
+        ? AsyncStorage.setItem('build', build)
+        : AsyncStorage.removeItem('build'),
+    ]).catch(console.error);
   }, [roomId, build, mode]);
 
   const handleButtonClick = useCallback(() => {
@@ -46,28 +57,46 @@ export default function App() {
     }, 3000);
     return () => {
       clearTimeout(timer);
-    }
+    };
   }, [latestMessage]);
 
   if (!mode) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'white',
+        }}
+      >
         <View>
-        <Text>Room ID</Text>
-        <TextInput value={roomId} onChangeText={setRoomId} autoFocus style={textInputStyle} autoCapitalize='none' />
-        <Text>Build (Only for debug)</Text>
-        <TextInput value={build} onChangeText={setBuild} style={textInputStyle} autoCapitalize='none' />
-        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          <View style={ { marginRight: 16 } }>
-            <Button title="Meet" onPress={() => setMode('meet')} />
-          </View>
-          <View>
-            <Button title="Replay" onPress={() => setMode('replay')} />
+          <Text>Room ID</Text>
+          <TextInput
+            value={roomId}
+            onChangeText={setRoomId}
+            autoFocus
+            style={textInputStyle}
+            autoCapitalize="none"
+          />
+          <Text>Build (Only for debug)</Text>
+          <TextInput
+            value={build}
+            onChangeText={setBuild}
+            style={textInputStyle}
+            autoCapitalize="none"
+          />
+          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+            <View style={{ marginRight: 16 }}>
+              <Button title="Meet" onPress={() => setMode('meet')} />
+            </View>
+            <View>
+              <Button title="Replay" onPress={() => setMode('replay')} />
+            </View>
           </View>
         </View>
       </View>
-      </View>
-    )
+    );
   }
 
   return (
@@ -80,7 +109,15 @@ export default function App() {
         ref={viewRef}
         onMessage={setLatestMessage}
       />
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, justifyContent: 'center' }}>
+      <View
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          justifyContent: 'center',
+        }}
+      >
         <Text>{latestMessage}</Text>
       </View>
       <View
