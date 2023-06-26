@@ -15,6 +15,9 @@ const textInputStyle = {
   borderRadius: 8,
   marginBottom: 16,
 };
+
+const defaultQueryParams = { chime: '0' };
+
 export default function App() {
   const viewRef = useRef<PagecallViewRef>(null);
   const [roomId, setRoomId] = useState('');
@@ -118,7 +121,9 @@ export default function App() {
       <PagecallView
         roomId={roomId}
         mode={mode}
-        queryParams={build ? { build } : undefined}
+        queryParams={
+          build ? { ...defaultQueryParams, build } : defaultQueryParams
+        }
         style={{ flex: 1 }}
         ref={viewRef}
         onLoad={() => setLoading(false)}
