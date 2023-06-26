@@ -8,7 +8,14 @@ import {
   findNodeHandle,
 } from 'react-native';
 import type { HostComponent } from 'react-native';
-import { forwardRef, useRef, useImperativeHandle, useEffect, useCallback, useMemo } from 'react';
+import {
+  forwardRef,
+  useRef,
+  useImperativeHandle,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 
 const LINKING_ERROR =
   `The package 'react-native-pagecall' doesn't seem to be linked. Make sure: \n\n` +
@@ -29,14 +36,47 @@ type PagecallExternalProps = {
   roomId: string;
   mode?: 'meet' | 'replay';
   accessToken?: string;
-  queryParams?: { [key: string]: string }
+  queryParams?: { [key: string]: string };
+
+  /**
+   * Called when the meeting room loading is complete and the entrance page is displayed.
+   */
+  onLoad?: () => void;
+  /**
+   * Called when an error occurs during entrance or during the meeting.
+   */
+  onError?: (error: Error) => void;
+  /**
+   * Called when the session is intentionally or externally (e.g., kicked out by an admin) terminated.
+   */
+  onTerminate?: (reason: string) => void;
+  /**
+   * Called when a message is received in the meeting room.
+   */
   onMessage?: (message: string) => void;
 };
 
 export type PagecallViewProps = PagecallSharedProps & PagecallExternalProps;
 
+type NativeEventPayload =
+  | {
+      type: 'load';
+    }
+  | {
+      type: 'error';
+      message: string;
+    }
+  | {
+      type: 'terminate';
+      reason: string;
+    }
+  | {
+      type: 'message';
+      message: string;
+    };
+
 type PagecallInternalProps = {
-  onNativeEvent?: (event: { nativeEvent: { message: string } }) => void;
+  onNativeEvent?: (event: NativeEventPayload) => void;
   uri: string;
 };
 
@@ -44,7 +84,7 @@ const ComponentName = 'PagecallView';
 
 const PagecallViewView =
   UIManager.getViewManagerConfig(ComponentName) != null
-  ? requireNativeComponent<PagecallSharedProps & PagecallInternalProps>(
+    ? requireNativeComponent<PagecallSharedProps & PagecallInternalProps>(
         ComponentName
       )
     : () => {
@@ -53,21 +93,35 @@ const PagecallViewView =
 
 let mountCount = 0;
 
-const baseUrl = 'https://app.pagecall.com'
+const baseUrl = 'https://app.pagecall.com';
 const emptyQueryParams = Object.freeze({});
 
 export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
-  ({ roomId, mode = 'meet', accessToken, queryParams = emptyQueryParams, ...props }, ref) => {
+  (
+    {
+      roomId,
+      mode = 'meet',
+      accessToken,
+      queryParams = emptyQueryParams,
+      onLoad,
+      onError,
+      onTerminate,
+      onMessage,
+      ...props
+    },
+    ref
+  ) => {
     const viewRef = useRef<HostComponent<PagecallViewProps>>(null);
     const uri = useMemo(() => {
       const queryString = Object.entries({
         ...queryParams,
         access_token: accessToken,
+        // eslint-disable-next-line @typescript-eslint/no-shadow
       }).reduce((queryString, [key, value]) => {
         if (value == null) return queryString;
-        return `${queryString}&${key}=${encodeURI(value)}`
+        return `${queryString}&${key}=${encodeURI(value)}`;
       }, `room_id=${roomId}`);
-      return `${baseUrl}/${mode}?${queryString}`
+      return `${baseUrl}/${mode}?${queryString}`;
     }, [roomId, mode, accessToken, queryParams]);
 
     useImperativeHandle(ref, () => ({
@@ -94,16 +148,30 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       };
     }, []);
 
-    const onNativeEvent = useCallback((event) => {
-      if (props.onMessage) {
-        const message = event.nativeEvent?.message;
-        if (typeof message !== 'string') {
-          console.warn('message is not string. event: ', event);
-          return;
+    const onNativeEvent = useCallback(
+      (event) => {
+        const data = event.nativeEvent;
+        if (!data) return;
+        switch (data.type) {
+          case 'load': {
+            onLoad?.();
+            return;
+          }
+          case 'error': {
+            onError?.(new Error(data.message));
+            return;
+          }
+          case 'terminate': {
+            onTerminate?.(data.reason);
+            return;
+          }
+          case 'message': {
+            onMessage?.(data.message);
+          }
         }
-        props.onMessage(message);
-      }
-    }, [props.onMessage]);
+      },
+      [onLoad, onError, onTerminate, onMessage]
+    );
 
     return (
       <PagecallViewView
