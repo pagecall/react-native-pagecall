@@ -70,6 +70,8 @@ export default function App() {
     return params;
   }, [query]);
 
+  const [isLoading, setLoading] = useState(false);
+
   if (!mode) {
     return (
       <View
@@ -98,10 +100,22 @@ export default function App() {
           />
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <View style={{ marginRight: 16 }}>
-              <Button title="Meet" onPress={() => setMode('meet')} />
+              <Button
+                title="Meet"
+                onPress={() => {
+                  setLoading(true);
+                  setMode('meet');
+                }}
+              />
             </View>
             <View>
-              <Button title="Replay" onPress={() => setMode('replay')} />
+              <Button
+                title="Replay"
+                onPress={() => {
+                  setLoading(true);
+                  setMode('replay');
+                }}
+              />
             </View>
           </View>
         </View>
@@ -117,19 +131,39 @@ export default function App() {
         queryParams={queryParams}
         style={{ flex: 1 }}
         ref={viewRef}
+        onLoad={() => setLoading(false)}
+        onTerminate={() => setMode(null)}
         onMessage={setLatestMessage}
       />
-      <View
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          justifyContent: 'center',
-        }}
-      >
-        <Text>{latestMessage}</Text>
-      </View>
+      {latestMessage && (
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 128,
+            left: 0,
+            right: 0,
+            alignItems: 'center',
+          }}
+        >
+          <Text style={{ color: 'red' }}>{latestMessage}</Text>
+        </View>
+      )}
+      {isLoading && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#1361FF',
+          }}
+        >
+          <Text style={{ color: 'white' }}>Now loading...</Text>
+        </View>
+      )}
       <View
         style={{ padding: 20, justifyContent: 'center', flexDirection: 'row' }}
       >

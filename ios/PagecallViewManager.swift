@@ -31,8 +31,26 @@ class PagecallViewManager: RCTViewManager {
 }
 
 class PagecallView: UIView, PagecallDelegate {
+    @objc var onNativeEvent: RCTDirectEventBlock?
+    func pagecallDidLoad(_ webView: PagecallWebView) {
+        self.onNativeEvent?(["type": "load"])
+    }
+
+    func pagecallDidEncounter(_ view: PagecallWebView, error: Error) {
+        self.onNativeEvent?(["type": "error", "message": error.localizedDescription])
+    }
+
     func pagecallDidTerminate(_ view: Pagecall.PagecallWebView, reason: Pagecall.TerminationReason) {
-        // TODO
+        switch reason {
+        case .internal:
+            self.onNativeEvent?(["type": "terminate", "reason": "internal"])
+        case .other(let string):
+            self.onNativeEvent?(["type": "terminate", "reason": string])
+        }
+    }
+
+    func pagecallDidReceive(_ view: PagecallWebView, message: String) {
+        self.onNativeEvent?(["type": "message", "message": message])
     }
 
     let webView = PagecallWebView()
@@ -58,16 +76,6 @@ class PagecallView: UIView, PagecallDelegate {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    @objc var onNativeEvent: RCTDirectEventBlock?
-    func pagecallDidLoad(_ webView: PagecallWebView) {
-        DispatchQueue.main.async {
-            self.stopListen?()
-            self.stopListen = webView.listenMessage { message in
-                self.onNativeEvent?(["message": message])
-            }
-        }
     }
 
     func dispose() {
