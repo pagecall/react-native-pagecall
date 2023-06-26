@@ -15,6 +15,7 @@ const textInputStyle = {
   borderRadius: 8,
   marginBottom: 16,
 };
+
 export default function App() {
   const viewRef = useRef<PagecallViewRef>(null);
   const [roomId, setRoomId] = useState('');
@@ -61,7 +62,7 @@ export default function App() {
   }, [latestMessage]);
 
   const queryParams = useMemo(() => {
-    const params: { [key: string]: string } = {};
+    const params: { [key: string]: string } = { chime: '0' };
     query.split('&').forEach((queryItem) => {
       const [key, value] = queryItem.split('=');
       if (!key || !value) return;
