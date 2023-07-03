@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles, @typescript-eslint/no-shadow */
 import React from 'react';
-import { useRef, useCallback, useState, useEffect } from 'react';
+import { useRef, useCallback, useState, useEffect, useMemo } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { SafeAreaView, View, Button, TextInput, Text } from 'react-native';
@@ -18,7 +18,7 @@ const textInputStyle = {
 export default function App() {
   const viewRef = useRef<PagecallViewRef>(null);
   const [roomId, setRoomId] = useState('');
-  const [build, setBuild] = useState('');
+  const [query, setQuery] = useState('');
   const [mode, setMode] = useState<'meet' | 'replay' | null>(null);
 
   useEffect(() => {
@@ -26,9 +26,9 @@ export default function App() {
       if (!roomId) return;
       setRoomId(roomId);
     });
-    AsyncStorage.getItem('build').then((build) => {
-      if (!build) return;
-      setBuild(build);
+    AsyncStorage.getItem('query').then((query) => {
+      if (!query) return;
+      setQuery(query);
     });
   }, []);
 
@@ -38,11 +38,11 @@ export default function App() {
       roomId
         ? AsyncStorage.setItem('roomId', roomId)
         : AsyncStorage.removeItem('roomId'),
-      build
-        ? AsyncStorage.setItem('build', build)
-        : AsyncStorage.removeItem('build'),
+      query
+        ? AsyncStorage.setItem('query', query)
+        : AsyncStorage.removeItem('query'),
     ]).catch(console.error);
-  }, [roomId, build, mode]);
+  }, [roomId, query, mode]);
 
   const handleButtonClick = useCallback(() => {
     if (!viewRef.current) return;
@@ -59,6 +59,16 @@ export default function App() {
       clearTimeout(timer);
     };
   }, [latestMessage]);
+
+  const queryParams = useMemo(() => {
+    const params: { [key: string]: string } = {};
+    query.split('&').forEach((queryItem) => {
+      const [key, value] = queryItem.split('=');
+      if (!key || !value) return;
+      params[key] = value;
+    });
+    return params;
+  }, [query]);
 
   if (!mode) {
     return (
@@ -79,10 +89,10 @@ export default function App() {
             style={textInputStyle}
             autoCapitalize="none"
           />
-          <Text>Build (Only for debug)</Text>
+          <Text>Query (Only for debug)</Text>
           <TextInput
-            value={build}
-            onChangeText={setBuild}
+            value={query}
+            onChangeText={setQuery}
             style={textInputStyle}
             autoCapitalize="none"
           />
@@ -104,7 +114,7 @@ export default function App() {
       <PagecallView
         roomId={roomId}
         mode={mode}
-        queryParams={build ? { build } : undefined}
+        queryParams={queryParams}
         style={{ flex: 1 }}
         ref={viewRef}
         onMessage={setLatestMessage}
