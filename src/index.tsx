@@ -8,7 +8,14 @@ import {
   findNodeHandle,
 } from 'react-native';
 import type { HostComponent } from 'react-native';
-import { forwardRef, useRef, useImperativeHandle, useEffect, useCallback, useMemo } from 'react';
+import {
+  forwardRef,
+  useRef,
+  useImperativeHandle,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 
 const LINKING_ERROR =
   `The package 'react-native-pagecall' doesn't seem to be linked. Make sure: \n\n` +
@@ -29,7 +36,7 @@ type PagecallExternalProps = {
   roomId: string;
   mode?: 'meet' | 'replay';
   accessToken?: string;
-  queryParams?: { [key: string]: string }
+  queryParams?: { [key: string]: string };
   onMessage?: (message: string) => void;
 };
 
@@ -44,7 +51,7 @@ const ComponentName = 'PagecallView';
 
 const PagecallViewView =
   UIManager.getViewManagerConfig(ComponentName) != null
-  ? requireNativeComponent<PagecallSharedProps & PagecallInternalProps>(
+    ? requireNativeComponent<PagecallSharedProps & PagecallInternalProps>(
         ComponentName
       )
     : () => {
@@ -53,21 +60,30 @@ const PagecallViewView =
 
 let mountCount = 0;
 
-const baseUrl = 'https://app.pagecall.com'
+const baseUrl = 'https://app.pagecall.com';
 const emptyQueryParams = Object.freeze({});
 
 export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
-  ({ roomId, mode = 'meet', accessToken, queryParams = emptyQueryParams, ...props }, ref) => {
+  (
+    {
+      roomId,
+      mode = 'meet',
+      accessToken,
+      queryParams = emptyQueryParams,
+      ...props
+    },
+    ref
+  ) => {
     const viewRef = useRef<HostComponent<PagecallViewProps>>(null);
     const uri = useMemo(() => {
       const queryString = Object.entries({
         ...queryParams,
         access_token: accessToken,
-      }).reduce((queryString, [key, value]) => {
-        if (value == null) return queryString;
-        return `${queryString}&${key}=${encodeURI(value)}`
+      }).reduce((queryParam, [key, value]) => {
+        if (value == null) return queryParam;
+        return `${queryParam}&${key}=${encodeURI(value)}`;
       }, `room_id=${roomId}`);
-      return `${baseUrl}/${mode}?${queryString}`
+      return `${baseUrl}/${mode}?${queryString}`;
     }, [roomId, mode, accessToken, queryParams]);
 
     useImperativeHandle(ref, () => ({
@@ -94,16 +110,20 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       };
     }, []);
 
-    const onNativeEvent = useCallback((event) => {
-      if (props.onMessage) {
-        const message = event.nativeEvent?.message;
-        if (typeof message !== 'string') {
-          console.warn('message is not string. event: ', event);
-          return;
+    const onNativeEvent = useCallback(
+      (event) => {
+        if (props.onMessage) {
+          const message = event.nativeEvent?.message;
+          if (typeof message !== 'string') {
+            console.warn('message is not string. event: ', event);
+            return;
+          }
+          props.onMessage(message);
         }
-        props.onMessage(message);
-      }
-    }, [props.onMessage]);
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [props.onMessage]
+    );
 
     return (
       <PagecallViewView
