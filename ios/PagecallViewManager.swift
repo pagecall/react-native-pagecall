@@ -30,7 +30,7 @@ class PagecallViewManager: RCTViewManager {
     }
 }
 
-class PagecallView: UIView, PagecallDelegate {
+class PagecallView: UIView, PagecallDelegate, UIDocumentPickerDelegate {
     @objc var onNativeEvent: RCTDirectEventBlock?
     func pagecallDidLoad(_ webView: PagecallWebView) {
         self.onNativeEvent?(["type": "load"])
@@ -40,7 +40,7 @@ class PagecallView: UIView, PagecallDelegate {
         self.onNativeEvent?(["type": "error", "message": error.localizedDescription])
     }
 
-    func pagecallDidTerminate(_ view: Pagecall.PagecallWebView, reason: Pagecall.TerminationReason) {
+    func pagecallDidTerminate(_ view: PagecallWebView, reason: TerminationReason) {
         switch reason {
         case .internal:
             self.onNativeEvent?(["type": "terminate", "reason": "internal"])
@@ -51,6 +51,33 @@ class PagecallView: UIView, PagecallDelegate {
 
     func pagecallDidReceive(_ view: PagecallWebView, message: String) {
         self.onNativeEvent?(["type": "message", "message": message])
+    }
+
+    private var downloadedUrl: URL?
+    func pagecall(_ view: PagecallWebView, requestDownloadFor url: URL) {
+        if let root = window?.rootViewController {
+            let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [.folder])
+            documentPicker.delegate = self
+            self.downloadedUrl = url
+            root.present(documentPicker, animated: true)
+        }
+    }
+
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        if let selectedUrl = urls.first, let downloadedUrl = downloadedUrl {
+            self.downloadedUrl = nil
+            do {
+                if selectedUrl.startAccessingSecurityScopedResource() {
+                    try FileManager().moveItem(
+                        at: downloadedUrl,
+                        to: selectedUrl.appendingPathComponent(downloadedUrl.lastPathComponent)
+                    )
+                    selectedUrl.stopAccessingSecurityScopedResource()
+                }
+            } catch {
+                print("[PagecallView] Failed to moveItem", error)
+            }
+        }
     }
 
     let webView = PagecallWebView()
