@@ -1,9 +1,12 @@
 package com.pagecallview;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -17,11 +20,14 @@ import com.pagecall.PagecallWebView;
 
 import java.util.Map;
 
-public class PagecallViewManager extends SimpleViewManager<View> {
+public class PagecallViewManager extends SimpleViewManager<View> implements ActivityEventListener {
   public static final String REACT_CLASS = "PagecallView";
+
+  private PagecallWebView webView;
 
   public PagecallViewManager(ReactApplicationContext reactContext) {
     super();
+    reactContext.addActivityEventListener(this);
   }
 
   @Override
@@ -34,14 +40,14 @@ public class PagecallViewManager extends SimpleViewManager<View> {
   @NonNull
   public View createViewInstance(ThemedReactContext reactContext) {
     PagecallWebView.setWebContentsDebuggingEnabled(true);
-    PagecallWebView webView = new PagecallWebView(reactContext.getCurrentActivity()) {
+    this.webView = new PagecallWebView(reactContext.getCurrentActivity()) {
       @Override
       protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         this.destroy();
       }
     };
-    webView.listenMessage(message -> {
+    this.webView.listenMessage(message -> {
       reactContext
         .getJSModule(RCTEventEmitter.class)
         .receiveEvent(webView.getId(), "onNativeEvent", createMessageEvent(message));
@@ -65,5 +71,18 @@ public class PagecallViewManager extends SimpleViewManager<View> {
     return MapBuilder.<String, Object>builder()
       .put("onNativeEvent", MapBuilder.of("registrationName", "onNativeEvent"))
       .build();
+  }
+
+  // ActivityEventListener
+  @Override
+  public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent intent) {
+    if (this.webView != null) {
+      this.webView.onActivityResult(requestCode, resultCode, intent);
+    }
+  }
+
+  @Override
+  public void onNewIntent(Intent intent) {
+    // ActivityEventListener delegate interface를 만족하기 위한 stub
   }
 }
