@@ -2,11 +2,13 @@ package com.pagecallview;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.ActivityEventListener;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -17,16 +19,20 @@ import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 
 import com.pagecall.PagecallWebView;
+import com.pagecall.TerminationReason;
 
 import java.util.Map;
 
-public class PagecallViewManager extends SimpleViewManager<View> implements ActivityEventListener {
+public class PagecallViewManager extends SimpleViewManager<View> implements ActivityEventListener, PagecallWebView.Listener {
   public static final String REACT_CLASS = "PagecallView";
 
   private PagecallWebView webView;
 
+  private ReactContext reactContext;
+
   public PagecallViewManager(ReactApplicationContext reactContext) {
     super();
+    this.reactContext = reactContext;
     reactContext.addActivityEventListener(this);
   }
 
@@ -47,18 +53,8 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
         this.destroy();
       }
     };
-    this.webView.listenMessage(message -> {
-      reactContext
-        .getJSModule(RCTEventEmitter.class)
-        .receiveEvent(webView.getId(), "onNativeEvent", createMessageEvent(message));
-    });
+    this.webView.setListener(this);
     return webView;
-  }
-
-  private WritableMap createMessageEvent(String message) {
-    WritableMap event = Arguments.createMap();
-    event.putString("message", message);
-    return event;
   }
 
   @ReactProp(name = "uri")
@@ -84,5 +80,44 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
   @Override
   public void onNewIntent(Intent intent) {
     // ActivityEventListener delegate interface를 만족하기 위한 stub
+  }
+
+  // PagecallWebView.Listener implementations
+  private WritableMap createNativeEvent(String type, String payloadKey, String payloadValue) {
+    WritableMap event = Arguments.createMap();
+    event.putString("type", type);
+    event.putString(payloadKey, payloadValue);
+    return event;
+  }
+  private WritableMap createNativeEvent(String type) {
+    WritableMap event = Arguments.createMap();
+    event.putString("type", type);
+    return event;
+  }
+
+  @Override
+  public void onLoaded() {
+    reactContext
+      .getJSModule(RCTEventEmitter.class)
+      .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("load"));
+  }
+
+  @Override
+  public void onMessage(String message) {
+    reactContext
+      .getJSModule(RCTEventEmitter.class)
+      .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("message", "message", message));
+  }
+
+  @Override
+  public void onTerminated(TerminationReason terminationReason) {
+    String reason = terminationReason.getValue();
+    if (terminationReason == TerminationReason.OTHER) {
+      reason = terminationReason.getOtherReason();
+    }
+
+    reactContext
+      .getJSModule(RCTEventEmitter.class)
+      .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("terminate", "reason", reason));
   }
 }
