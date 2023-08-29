@@ -46,15 +46,17 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
   @NonNull
   public View createViewInstance(ThemedReactContext reactContext) {
     PagecallWebView.setWebContentsDebuggingEnabled(true);
-    this.webView = new PagecallWebView(reactContext.getCurrentActivity()) {
-      @Override
-      protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        this.destroy();
-      }
-    };
+    this.webView = new PagecallWebView(reactContext.getCurrentActivity());
     this.webView.setListener(this);
     return webView;
+  }
+
+  @Override
+  public void onDropViewInstance(View view) {
+    super.onDropViewInstance(view);
+    if (view instanceof PagecallWebView) {
+      ((PagecallWebView) view).destroy();
+    }
   }
 
   @ReactProp(name = "uri")
