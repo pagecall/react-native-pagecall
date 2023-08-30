@@ -330,7 +330,7 @@ PODS:
   - React-jsinspector (0.71.7)
   - React-logger (0.71.7):
     - glog
-  - react-native-pagecall (2.0.9):
+  - react-native-pagecall (2.0.10):
     - Pagecall (= 0.0.17)
     - React-Core
   - React-perflogger (0.71.7)
