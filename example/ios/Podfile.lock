@@ -78,7 +78,7 @@ PODS:
   - hermes-engine/Pre-built (0.71.7)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.1100)
-  - Pagecall (0.0.17)
+  - Pagecall (0.0.18)
   - RCT-Folly (2021.07.22.00):
     - boost
     - DoubleConversion
@@ -331,7 +331,7 @@ PODS:
   - React-logger (0.71.7):
     - glog
   - react-native-pagecall (2.0.10):
-    - Pagecall (= 0.0.17)
+    - Pagecall (= 0.0.18)
     - React-Core
   - React-perflogger (0.71.7)
   - React-RCTActionSheet (0.71.7):
@@ -600,7 +600,7 @@ SPEC CHECKSUMS:
   hermes-engine: 4438d2b8bf8bebaba1b1ac0451160bab59e491f8
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
-  Pagecall: 619269ba3d8a78a9339cc079d1f5b5cab30252ef
+  Pagecall: 3a2d759ddcf0219709bdeced68e343037b8d5dfa
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: 5a4a30ac20c86eeadd6844a9328f78d4168cf9b2
   RCTTypeSafety: 279fc5861a89f0f37db3a585f27f971485b4b734
@@ -615,7 +615,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: eaa5f71eb8f6861cf0e57f1a0f52aeb020d9e18e
   React-jsinspector: 9885f6f94d231b95a739ef7bb50536fb87ce7539
   React-logger: 3f8ebad1be1bf3299d1ab6d7f971802d7395c7ef
-  react-native-pagecall: 1ff96b46ad366634a15f51e3b8233fa902faebf4
+  react-native-pagecall: a84c0baf9801f2d986c15a7437caa61d5767fab7
   React-perflogger: 2d505bbe298e3b7bacdd9e542b15535be07220f6
   React-RCTActionSheet: 0e96e4560bd733c9b37efbf68f5b1a47615892fb
   React-RCTAnimation: fd138e26f120371c87e406745a27535e2c8a04ef
@@ -636,4 +636,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 77d779f9b8f9cdb13435e864bb07695d84f24c83
 
-COCOAPODS: 1.12.0
+COCOAPODS: 1.12.1
