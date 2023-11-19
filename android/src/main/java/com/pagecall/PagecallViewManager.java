@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebResourceError;
 
 import androidx.annotation.NonNull;
 
@@ -121,5 +122,12 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
     reactContext
       .getJSModule(RCTEventEmitter.class)
       .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("terminate", "reason", reason));
+  }
+
+  @Override
+  public void onError(WebResourceError error) {
+    reactContext
+      .getJSModule(RCTEventEmitter.class)
+      .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("terminate", "message", error.toString()));
   }
 }
