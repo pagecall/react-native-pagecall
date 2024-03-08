@@ -78,7 +78,7 @@ PODS:
   - hermes-engine/Pre-built (0.71.7)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.1100)
-  - Pagecall (0.0.20)
+  - Pagecall (0.0.23-dev0)
   - RCT-Folly (2021.07.22.00):
     - boost
     - DoubleConversion
@@ -331,7 +331,7 @@ PODS:
   - React-logger (0.71.7):
     - glog
   - react-native-pagecall (2.0.11):
-    - Pagecall (= 0.0.20)
+    - Pagecall (= 0.0.23-dev0)
     - React-Core
   - React-perflogger (0.71.7)
   - React-RCTActionSheet (0.71.7):
