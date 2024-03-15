@@ -8,6 +8,11 @@ runs:
       uses: actions/setup-node@v3
       with:
         node-version-file: .nvmrc
+    
+    # https://github.com/yarnpkg/yarn/issues/9015 해결되면 지워도 됨
+    - name: Install Yarn
+      shell: bash
+      run: npm install -g yarn@1.22.19
 
     - name: Cache dependencies
       id: yarn-cache
