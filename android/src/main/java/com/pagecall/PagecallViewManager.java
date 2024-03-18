@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
+import android.webkit.ValueCallback;
 import android.webkit.WebResourceError;
 
 import androidx.annotation.NonNull;
@@ -67,6 +68,32 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
   @ReactProp(name = "uri")
   public void setUri(PagecallWebView view, String uri) {
     view.loadUrl(uri);
+  }
+
+  @ReactProp(name = "stringifiedValue")
+  public void setStringifiedValue(PagecallWebView view, String stringifiedValue) {
+    if (stringifiedValue != null) {
+      final String script =
+        "(function(window) {" +
+          "    try {" +
+          "        if (window.PagecallUI) {" +
+          "            const values = JSON.parse('" + stringifiedValue.replace("'", "\\'") + "');" +
+          "            for (const key in values) {" +
+          "                window.PagecallUI.set(key, values[key]);" +
+          "            }" +
+          "        }" +
+          "        return 'Success';" +
+          "    } catch (e) {" +
+          "        return 'Error: ' + e.message;" +
+          "    }" +
+          "})(window);";
+
+      view.evaluateJavascript(script, value -> {
+        if (value.startsWith("\"Error:")) {
+          Log.e("PagecallViewManager", "JavaScript Error: " + value);
+        }
+      });
+    }
   }
 
   @Override
@@ -172,6 +199,6 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
   public void onError(WebResourceError error) {
     reactContext
       .getJSModule(RCTEventEmitter.class)
-      .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("terminate", "message", error.toString()));
+      .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("error", "message", error.getDescription().toString()));
   }
 }
