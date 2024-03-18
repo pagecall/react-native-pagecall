@@ -330,7 +330,7 @@ PODS:
   - React-jsinspector (0.71.7)
   - React-logger (0.71.7):
     - glog
-  - react-native-pagecall (2.0.11):
+  - react-native-pagecall (2.0.12):
     - Pagecall (= 0.0.20)
     - React-Core
   - React-perflogger (0.71.7)
@@ -615,7 +615,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: eaa5f71eb8f6861cf0e57f1a0f52aeb020d9e18e
   React-jsinspector: 9885f6f94d231b95a739ef7bb50536fb87ce7539
   React-logger: 3f8ebad1be1bf3299d1ab6d7f971802d7395c7ef
-  react-native-pagecall: 3e8c9cf00b1b2363ac75f9eb6ba6646908abd80c
+  react-native-pagecall: da6c2bab666635fe3725d58344d4165c2ebbef70
   React-perflogger: 2d505bbe298e3b7bacdd9e542b15535be07220f6
   React-RCTActionSheet: 0e96e4560bd733c9b37efbf68f5b1a47615892fb
   React-RCTAnimation: fd138e26f120371c87e406745a27535e2c8a04ef
@@ -636,4 +636,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 77d779f9b8f9cdb13435e864bb07695d84f24c83
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.12.0
