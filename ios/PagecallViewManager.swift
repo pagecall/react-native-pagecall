@@ -90,6 +90,24 @@ class PagecallView: UIView, PagecallDelegate, UIDocumentPickerDelegate {
         }
     }
 
+    @objc var stringifiedValue: String = "{}" {
+        didSet {
+            var javaScriptCode = """
+              if(PagecallUI) {
+                  const values = JSON.parse('\(stringifiedValue)');
+                  for (const key in values) {
+                    PagecallUI.set(key, values[key]);
+                  }
+              }
+            """
+            webView.evaluateJavaScript(javaScriptCode) { result, error in
+                if let error = error {
+                    print("[PagecallView] Failed to set value", error)
+                }
+            }
+        }
+    }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.addSubview(webView)

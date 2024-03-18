@@ -37,6 +37,7 @@ type PagecallExternalProps = {
   mode?: 'meet' | 'replay';
   accessToken?: string;
   queryParams?: { [key: string]: string };
+  value?: { [key: string]: unknown };
 
   /**
    * Called when the meeting room loading is complete and the entrance page is displayed.
@@ -78,6 +79,7 @@ type NativeEventPayload =
 type PagecallInternalProps = {
   onNativeEvent?: (event: NativeEventPayload) => void;
   uri: string;
+  stringifiedValue?: string;
 };
 
 const ComponentName = 'PagecallView';
@@ -103,6 +105,7 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       mode = 'meet',
       accessToken,
       queryParams = emptyQueryParams,
+      value,
       onLoad,
       onError,
       onTerminate,
@@ -116,9 +119,9 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       const queryString = Object.entries({
         ...queryParams,
         access_token: accessToken,
-      }).reduce((queryParam, [key, value]) => {
-        if (value == null) return queryParam;
-        return `${queryParam}&${key}=${encodeURI(value)}`;
+      }).reduce((queryParam, [key, val]) => {
+        if (val == null) return queryParam;
+        return `${queryParam}&${key}=${encodeURI(val)}`;
       }, `room_id=${roomId}`);
       return `${baseUrl}/${mode}?${queryString}`;
     }, [roomId, mode, accessToken, queryParams]);
@@ -176,6 +179,7 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       <PagecallViewView
         {...props}
         uri={uri}
+        stringifiedValue={JSON.stringify(value)}
         ref={viewRef}
         style={props.style}
         onNativeEvent={onNativeEvent}

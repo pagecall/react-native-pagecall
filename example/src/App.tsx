@@ -19,8 +19,22 @@ export default function App() {
   const viewRef = useRef<PagecallViewRef>(null);
   const [roomId, setRoomId] = useState('');
   const [query, setQuery] = useState('');
+  const [value, setValue] = useState<{ [key: string]: unknown }>({});
   const [mode, setMode] = useState<'meet' | 'replay' | null>(null);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setValue({});
+      const now = String(Date.now());
+      setValue({
+        now,
+        arr: [1, 2, now],
+        obj: { a: 1, b: now },
+        mixed: [1, now, { b: now }],
+      });
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
   useEffect(() => {
     AsyncStorage.getItem('roomId').then((roomId) => {
       if (!roomId) return;
@@ -131,6 +145,7 @@ export default function App() {
         queryParams={queryParams}
         style={{ flex: 1 }}
         ref={viewRef}
+        value={value}
         onLoad={() => setLoading(false)}
         onTerminate={() => setMode(null)}
         onMessage={setLatestMessage}
