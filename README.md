@@ -25,6 +25,17 @@ yarn add react-native-pagecall
 
 Please refer to the example. You can easily grasp it by looking at [App.tsx](/example/src/App.tsx).
 
+## iOS setup
+
+Configure the minimum iOS version to 14 for installing the WebRTC package.
+
+In your ios/Podfile, make the following adjustment:
+
+```diff
+- platform :ios, min_ios_version_supported
++ platform :ios, '14.0'
+```
+
 ## Android setup
 
 To use this module in an Android project, you need to add the dependency of `pagecall-android-sdk` manually:
