@@ -1,20 +1,45 @@
-/* eslint-disable react-native/no-inline-styles, @typescript-eslint/no-shadow */
-import React from 'react';
-import { useRef, useCallback, useState, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useRef } from 'react';
+
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Button,
+  SafeAreaView,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PagecallView, PagecallViewRef } from 'react-native-pagecall';
 
-import { SafeAreaView, View, Button, TextInput, Text } from 'react-native';
-import { PagecallView } from 'react-native-pagecall';
-import type { PagecallViewRef } from 'react-native-pagecall';
+const styles = StyleSheet.create({
+  textInput: {
+    borderWidth: 1,
+    marginTop: 4,
+    padding: 8,
+    width: 280,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  messageBox: {
+    position: 'absolute',
+    bottom: 128,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  loadingBox: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#1361FF',
+  },
+});
 
-const textInputStyle = {
-  borderWidth: 1,
-  marginTop: 4,
-  padding: 8,
-  width: 280,
-  borderRadius: 8,
-  marginBottom: 16,
-};
 export default function App() {
   const viewRef = useRef<PagecallViewRef>(null);
   const [roomId, setRoomId] = useState('');
@@ -102,14 +127,14 @@ export default function App() {
             value={roomId}
             onChangeText={setRoomId}
             autoFocus
-            style={textInputStyle}
+            style={styles.textInput}
             autoCapitalize="none"
           />
           <Text>Query (Only for debug)</Text>
           <TextInput
             value={query}
             onChangeText={setQuery}
-            style={textInputStyle}
+            style={styles.textInput}
             autoCapitalize="none"
           />
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
@@ -151,31 +176,12 @@ export default function App() {
         onMessage={setLatestMessage}
       />
       {latestMessage && (
-        <View
-          style={{
-            position: 'absolute',
-            bottom: 128,
-            left: 0,
-            right: 0,
-            alignItems: 'center',
-          }}
-        >
+        <View style={styles.messageBox}>
           <Text style={{ color: 'red' }}>{latestMessage}</Text>
         </View>
       )}
       {isLoading && (
-        <View
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#1361FF',
-          }}
-        >
+        <View style={styles.loadingBox}>
           <Text style={{ color: 'white' }}>Now loading...</Text>
         </View>
       )}
