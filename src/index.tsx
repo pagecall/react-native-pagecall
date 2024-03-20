@@ -52,9 +52,13 @@ type PagecallExternalProps = {
    */
   onTerminate?: (reason: string) => void;
   /**
-   * Called when a message is received in the meeting room.
+   * Called when a remote message is received in the meeting room.
    */
   onMessage?: (message: string) => void;
+  /**
+   * Called when a local event occurs in the meeting room.
+   */
+  onEvent?: (payload: unknown) => void;
 };
 
 export type PagecallViewProps = PagecallSharedProps & PagecallExternalProps;
@@ -74,6 +78,10 @@ type NativeEventPayload =
   | {
       type: 'message';
       message: string;
+    }
+  | {
+      type: 'event';
+      payload: { [key: string]: unknown };
     };
 
 type PagecallInternalProps = {
@@ -110,6 +118,7 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       onError,
       onTerminate,
       onMessage,
+      onEvent,
       ...props
     },
     ref
@@ -169,10 +178,14 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
           }
           case 'message': {
             onMessage?.(data.message);
+            return;
+          }
+          case 'event': {
+            onEvent?.(data.payload);
           }
         }
       },
-      [onLoad, onError, onTerminate, onMessage]
+      [onLoad, onError, onTerminate, onMessage, onEvent]
     );
 
     return (

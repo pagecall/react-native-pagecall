@@ -53,6 +53,10 @@ class PagecallView: UIView, PagecallDelegate, UIDocumentPickerDelegate {
         self.onNativeEvent?(["type": "message", "message": message])
     }
 
+    func pagecallDidReceive(_ view: PagecallWebView, event: [String: Any]) {
+        self.onNativeEvent?(["type": "event", "payload": event])
+    }
+
     private var downloadedUrl: URL?
     func pagecall(_ view: PagecallWebView, requestDownloadFor url: URL) {
         if let root = window?.rootViewController {
