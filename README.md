@@ -38,6 +38,23 @@ In your ios/Podfile, make the following adjustment:
 
 ## Android setup
 
+Configure the minimum Android minSdkVersion to 24 for installing the WebRTC package.
+
+In your android/build.gradle, make the following adjustment:
+
+```diff
+ext {
+    buildToolsVersion = "34.0.0"
+-   minSdkVersion = 21
++   minSdkVersion = 24
+    compileSdkVersion = 33
+    compileSdkVersion = 33
+    targetSdkVersion = 33
+    ndkVersion = "25.1.8937393"
+    kotlinVersion = "1.8.0"
+}
+```
+
 To use this module in an Android project, you need to add the dependency of `pagecall-android-sdk` manually:
 
 In your android/app/build.gradle file, add the following:
