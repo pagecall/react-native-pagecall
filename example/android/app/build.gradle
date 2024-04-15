@@ -126,7 +126,9 @@ dependencies {
     } else {
         implementation jscFlavor
     }
-    implementation 'com.pagecall:pagecall-android-sdk:0.0.38'
+    // implementation 'com.pagecall:pagecall-android-sdk:0.0.38'
+    // activate when you use local sdk
+    implementation project(':pagecall-android-sdk')
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

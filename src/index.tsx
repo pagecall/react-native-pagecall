@@ -6,6 +6,7 @@ import {
   ViewStyle,
   NativeModules,
   findNodeHandle,
+  NativeEventEmitter,
 } from 'react-native';
 import type { HostComponent } from 'react-native';
 import {
@@ -85,7 +86,6 @@ type NativeEventPayload =
     };
 
 type PagecallInternalProps = {
-  onNativeEvent?: (event: NativeEventPayload) => void;
   uri: string;
   stringifiedValue?: string;
 };
@@ -159,34 +159,68 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       };
     }, []);
 
-    const onNativeEvent = useCallback(
-      (event) => {
-        const data = event.nativeEvent;
-        if (!data) return;
-        switch (data.type) {
+    useEffect(() => {
+      console.log('onEffect!!!');
+      const eventEmitter = new NativeEventEmitter();
+      let eventListener = eventEmitter.addListener('onNativeEvent', (event) => {
+        console.log({ event });
+        switch (event.type) {
           case 'load': {
             onLoad?.();
             return;
           }
           case 'error': {
-            onError?.(new Error(data.message));
+            onError?.(new Error(event.message));
             return;
           }
           case 'terminate': {
-            onTerminate?.(data.reason);
+            onTerminate?.(event.reason);
             return;
           }
           case 'message': {
-            onMessage?.(data.message);
+            onMessage?.(event.message);
             return;
           }
           case 'event': {
-            onEvent?.(data.payload);
+            onEvent?.(event.payload);
           }
         }
-      },
-      [onLoad, onError, onTerminate, onMessage, onEvent]
-    );
+      });
+      // Removes the listener once unmounted
+      return () => {
+        eventListener.remove();
+      };
+    }, [onError, onEvent, onLoad, onMessage, onTerminate]);
+
+    // const onNativeEvent = useCallback(
+    //   (event) => {
+    //     const data = event.nativeEvent;
+    //     console.log('onNativeEvent', { event });
+    //     if (!data) return;
+    //     switch (data.type) {
+    //       case 'load': {
+    //         onLoad?.();
+    //         return;
+    //       }
+    //       case 'error': {
+    //         onError?.(new Error(data.message));
+    //         return;
+    //       }
+    //       case 'terminate': {
+    //         onTerminate?.(data.reason);
+    //         return;
+    //       }
+    //       case 'message': {
+    //         onMessage?.(data.message);
+    //         return;
+    //       }
+    //       case 'event': {
+    //         onEvent?.(data.payload);
+    //       }
+    //     }
+    //   },
+    //   [onLoad, onError, onTerminate, onMessage, onEvent]
+    // );
 
     return (
       <PagecallViewView
@@ -195,7 +229,7 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
         stringifiedValue={JSON.stringify(value)}
         ref={viewRef}
         style={props.style}
-        onNativeEvent={onNativeEvent}
+        // onNativeEvent={onNativeEvent}
       />
     );
   }

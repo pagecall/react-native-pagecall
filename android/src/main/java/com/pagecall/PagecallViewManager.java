@@ -11,10 +11,12 @@ import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
@@ -51,7 +53,12 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
   @Override
   @NonNull
   public View createViewInstance(ThemedReactContext reactContext) {
+    Log.d("PagecallRN", "createViewInstance");
     PagecallWebView.setWebContentsDebuggingEnabled(true);
+    if (this.webView != null) {
+      Log.d("PagecallRN", "webView is already initialized, destroy old one");
+      this.webView.destroy();
+    }
     this.webView = new PagecallWebView(reactContext.getCurrentActivity());
     this.webView.setListener(this);
     return webView;
@@ -60,7 +67,9 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
   @Override
   public void onDropViewInstance(View view) {
     super.onDropViewInstance(view);
+    Log.d("PagecallRN", "onDropViewInstance");
     if (view instanceof PagecallWebView) {
+      Log.d("PagecallRN", "destroying PagecallWebView...");
       ((PagecallWebView) view).destroy();
     }
   }
@@ -160,24 +169,34 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
 
   @Override
   public void onLoaded() {
+    Log.d("PagecallRN", "onLoaded");
+//    reactContext
+//      .getJSModule(RCTEventEmitter.class)
+//      .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("load"));
     reactContext
-      .getJSModule(RCTEventEmitter.class)
-      .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("load"));
+      .getJSModule(ReactContext.RCTDeviceEventEmitter.class)
+      .emit("onNativeEvent", createNativeEvent("load"));
   }
 
   @Override
   public void onMessage(String message) {
+//    reactContext
+//      .getJSModule(RCTEventEmitter.class)
+//      .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("message", "message", message));
     reactContext
-      .getJSModule(RCTEventEmitter.class)
-      .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("message", "message", message));
+      .getJSModule(ReactContext.RCTDeviceEventEmitter.class)
+      .emit("onNativeEvent", createNativeEvent("message", "message", message));
   }
 
   @Override
   public void onEvent(JSONObject payload) {
     try {
+//      reactContext
+//        .getJSModule(RCTEventEmitter.class)
+//        .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("event", payload));
       reactContext
-        .getJSModule(RCTEventEmitter.class)
-        .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("event", payload));
+        .getJSModule(ReactContext.RCTDeviceEventEmitter.class)
+        .emit("onNativeEvent", createNativeEvent("event", payload));
     } catch (JSONException error) {
       Log.e("PagecallViewManager", error.toString());
     }
@@ -190,15 +209,24 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
       reason = terminationReason.getOtherReason();
     }
 
+//    reactContext
+//      .getJSModule(RCTEventEmitter.class)
+//      .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("terminate", "reason", reason));
     reactContext
-      .getJSModule(RCTEventEmitter.class)
-      .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("terminate", "reason", reason));
+      .getJSModule(ReactContext.RCTDeviceEventEmitter.class)
+      .emit("onNativeEvent", createNativeEvent("terminate", "reason", reason));
   }
 
   @Override
   public void onError(WebResourceError error) {
+    Log.d("PagecallRN", "errorOcurred");
+    Log.d("PagecallRN", error.getDescription().toString());
+
+//    reactContext
+//      .getJSModule(RCTEventEmitter.class)
+//      .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("error", "message", error.getDescription().toString()));
     reactContext
-      .getJSModule(RCTEventEmitter.class)
-      .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("error", "message", error.getDescription().toString()));
+      .getJSModule(ReactContext.RCTDeviceEventEmitter.class)
+      .emit("onNativeEvent", createNativeEvent("error", "message", error.getDescription().toString()));
   }
 }

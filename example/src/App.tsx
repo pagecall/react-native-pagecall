@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
 
 export default function App() {
   const viewRef = useRef<PagecallViewRef>(null);
-  const [roomId, setRoomId] = useState('');
+  const [roomId, setRoomId] = useState('661ccc3edc45a8433350ee9d');
   const [query, setQuery] = useState('');
   const [value, setValue] = useState<{ [key: string]: unknown }>({});
   const [mode, setMode] = useState<'meet' | 'replay' | null>(null);
@@ -60,28 +60,35 @@ export default function App() {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
-  useEffect(() => {
-    AsyncStorage.getItem('roomId').then((roomId) => {
-      if (!roomId) return;
-      setRoomId(roomId);
-    });
-    AsyncStorage.getItem('query').then((query) => {
-      if (!query) return;
-      setQuery(query);
-    });
-  }, []);
 
-  useEffect(() => {
-    if (!mode) return;
-    Promise.all([
-      roomId
-        ? AsyncStorage.setItem('roomId', roomId)
-        : AsyncStorage.removeItem('roomId'),
-      query
-        ? AsyncStorage.setItem('query', query)
-        : AsyncStorage.removeItem('query'),
-    ]).catch(console.error);
-  }, [roomId, query, mode]);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setRoomId('661ccdaddc45a8433350f1c3');
+  //     console.log('timeout!');
+  //   }, 20000);
+  // }, [setRoomId]);
+  // useEffect(() => {
+  //   AsyncStorage.getItem('roomId').then((roomId) => {
+  //     if (!roomId) return;
+  //     setRoomId(roomId);
+  //   });
+  //   AsyncStorage.getItem('query').then((query) => {
+  //     if (!query) return;
+  //     setQuery(query);
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   if (!mode) return;
+  //   Promise.all([
+  //     roomId
+  //       ? AsyncStorage.setItem('roomId', roomId)
+  //       : AsyncStorage.removeItem('roomId'),
+  //     query
+  //       ? AsyncStorage.setItem('query', query)
+  //       : AsyncStorage.removeItem('query'),
+  //   ]).catch(console.error);
+  // }, [roomId, query, mode]);
 
   const handleButtonClick = useCallback(() => {
     if (!viewRef.current) return;
@@ -167,11 +174,15 @@ export default function App() {
       <PagecallView
         roomId={roomId}
         mode={mode}
+        accessToken="lPamRwagouVXtjMsDidjwkzZXLgC1MoV"
         queryParams={queryParams}
         style={{ flex: 1 }}
         ref={viewRef}
         value={value}
-        onLoad={() => setLoading(false)}
+        onLoad={() => {
+          console.log('onLoad PagecallView');
+          setLoading(false);
+        }}
         onTerminate={() => setMode(null)}
         onMessage={setLatestMessage}
       />
