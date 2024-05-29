@@ -160,33 +160,44 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       };
     }, []);
 
+    const eventHandlers = {
+      onLoad,
+      onError,
+      onTerminate,
+      onMessage,
+      onEvent
+    };
+    const eventHandlersRef = useRef(eventHandlers);
+    eventHandlersRef.current = eventHandlers;
+
     const onNativeEvent = useCallback(
       (event) => {
+        const eventHandlers = eventHandlersRef.current;
         const data = event.nativeEvent;
         if (!data) return;
         switch (data.type) {
           case 'load': {
-            onLoad?.();
+            eventHandlers.onLoad?.();
             return;
           }
           case 'error': {
-            onError?.(new Error(data.message));
+            eventHandlers.onError?.(new Error(data.message));
             return;
           }
           case 'terminate': {
-            onTerminate?.(data.reason);
+            eventHandlers.onTerminate?.(data.reason);
             return;
           }
           case 'message': {
-            onMessage?.(data.message);
+            eventHandlers.onMessage?.(data.message);
             return;
           }
           case 'event': {
-            onEvent?.(data.payload);
+            eventHandlers.onEvent?.(data.payload);
           }
         }
       },
-      [onLoad, onError, onTerminate, onMessage, onEvent]
+      []
     );
 
     return (
