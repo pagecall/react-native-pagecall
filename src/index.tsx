@@ -154,7 +154,6 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
           'PagecallView is not supposed to be rendered twice or more at the same time. Please make sure the previous view is unmounted.'
         );
       return () => {
-        console.log('PagecallView is being disposed');
         NativeModules.PagecallViewManager?.dispose?.();
         mountCount -= 1;
       };
