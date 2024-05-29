@@ -164,40 +164,37 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       onError,
       onTerminate,
       onMessage,
-      onEvent
+      onEvent,
     };
     const eventHandlersRef = useRef(eventHandlers);
     eventHandlersRef.current = eventHandlers;
 
-    const onNativeEvent = useCallback(
-      (event) => {
-        const eventHandlers = eventHandlersRef.current;
-        const data = event.nativeEvent;
-        if (!data) return;
-        switch (data.type) {
-          case 'load': {
-            eventHandlers.onLoad?.();
-            return;
-          }
-          case 'error': {
-            eventHandlers.onError?.(new Error(data.message));
-            return;
-          }
-          case 'terminate': {
-            eventHandlers.onTerminate?.(data.reason);
-            return;
-          }
-          case 'message': {
-            eventHandlers.onMessage?.(data.message);
-            return;
-          }
-          case 'event': {
-            eventHandlers.onEvent?.(data.payload);
-          }
+    const onNativeEvent = useCallback((event) => {
+      const currentEventHandlers = eventHandlersRef.current;
+      const data = event.nativeEvent;
+      if (!data) return;
+      switch (data.type) {
+        case 'load': {
+          currentEventHandlers.onLoad?.();
+          return;
         }
-      },
-      []
-    );
+        case 'error': {
+          currentEventHandlers.onError?.(new Error(data.message));
+          return;
+        }
+        case 'terminate': {
+          currentEventHandlers.onTerminate?.(data.reason);
+          return;
+        }
+        case 'message': {
+          currentEventHandlers.onMessage?.(data.message);
+          return;
+        }
+        case 'event': {
+          currentEventHandlers.onEvent?.(data.payload);
+        }
+      }
+    }, []);
 
     return (
       <PagecallViewView
