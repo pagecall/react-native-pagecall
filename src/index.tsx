@@ -149,13 +149,18 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
 
     useEffect(() => {
       mountCount += 1;
+      console.log('PagecallView mounted', mountCount);
       if (mountCount > 1)
         console.error(
           'PagecallView is not supposed to be rendered twice or more at the same time. Please make sure the previous view is unmounted.'
         );
       return () => {
-        NativeModules.PagecallViewManager?.dispose?.();
         mountCount -= 1;
+        console.log('PagecallView unmounted', mountCount);
+        if (mountCount === 0) {
+          console.log('PagecallView is being disposed');
+          NativeModules.PagecallViewManager?.dispose?.();
+        }
       };
     }, []);
 
