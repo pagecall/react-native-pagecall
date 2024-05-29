@@ -130,7 +130,7 @@ class PagecallView: UIView, PagecallDelegate, UIDocumentPickerDelegate {
     func dispose() {
         self.stopListen?()
         self.stopListen = nil
-        self.cleanup()
+        webView.cleanup()
     }
 
     deinit {
