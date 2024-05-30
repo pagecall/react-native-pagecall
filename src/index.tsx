@@ -15,6 +15,7 @@ import {
   useEffect,
   useCallback,
   useMemo,
+  useState,
 } from 'react';
 
 const LINKING_ERROR =
@@ -164,6 +165,8 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       };
     }, []);
 
+    const [isLoaded, setLoaded] = useState(false);
+
     const eventHandlers = {
       onLoad,
       onError,
@@ -182,6 +185,7 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       switch (data.type) {
         case 'load': {
           currentEventHandlers.onLoad?.();
+          setLoaded(true);
           return;
         }
         case 'error': {
@@ -202,11 +206,16 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       }
     }, []);
 
+    const stringifiedValue = useMemo(() => {
+      if (!isLoaded || !value) return undefined;
+      return JSON.stringify(value);
+    }, [isLoaded, value]);
+
     return (
       <PagecallViewView
         {...props}
         uri={uri}
-        stringifiedValue={JSON.stringify(value)}
+        stringifiedValue={stringifiedValue}
         ref={viewRef}
         style={props.style}
         onNativeEvent={onNativeEvent}
