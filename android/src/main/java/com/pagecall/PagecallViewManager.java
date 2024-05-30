@@ -48,9 +48,13 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
     return REACT_CLASS;
   }
 
+  private static Integer instanceCount = 0;
+
   @Override
   @NonNull
   public View createViewInstance(ThemedReactContext reactContext) {
+    instanceCount += 1;
+    Log.d("PagecallViewManager", "createViewInstance " + instanceCount);
     PagecallWebView.setWebContentsDebuggingEnabled(true);
     this.webView = new PagecallWebView(reactContext.getCurrentActivity());
     this.webView.setListener(this);
@@ -59,6 +63,8 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
 
   @Override
   public void onDropViewInstance(View view) {
+    instanceCount -= 1;
+    Log.d("PagecallViewManager", "dropViewInstance " + instanceCount);
     super.onDropViewInstance(view);
     if (view instanceof PagecallWebView) {
       ((PagecallWebView) view).destroy();
@@ -160,6 +166,7 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
 
   @Override
   public void onLoaded() {
+    Log.d("PagecallViewManager", "onLoaded");
     reactContext
       .getJSModule(RCTEventEmitter.class)
       .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("load"));
@@ -167,6 +174,7 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
 
   @Override
   public void onMessage(String message) {
+    Log.d("PagecallViewManager", "onMessage: " + message);
     reactContext
       .getJSModule(RCTEventEmitter.class)
       .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("message", "message", message));
@@ -174,6 +182,7 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
 
   @Override
   public void onEvent(JSONObject payload) {
+    Log.d("PagecallViewManager", "onEvent");
     try {
       reactContext
         .getJSModule(RCTEventEmitter.class)
@@ -186,6 +195,7 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
   @Override
   public void onTerminated(TerminationReason terminationReason) {
     String reason = terminationReason.getValue();
+    Log.d("PagecallViewManager", "onTerminated: " + reason);
     if (terminationReason == TerminationReason.OTHER) {
       reason = terminationReason.getOtherReason();
     }
@@ -197,6 +207,7 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
 
   @Override
   public void onError(WebResourceError error) {
+    Log.d("PagecallViewManager", "onError");
     reactContext
       .getJSModule(RCTEventEmitter.class)
       .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("error", "message", error.getDescription().toString()));

@@ -178,6 +178,7 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       const currentEventHandlers = eventHandlersRef.current;
       const data = event.nativeEvent;
       if (!data) return;
+      console.debug('PagecallWebView nativeEvent', data);
       switch (data.type) {
         case 'load': {
           currentEventHandlers.onLoad?.();
