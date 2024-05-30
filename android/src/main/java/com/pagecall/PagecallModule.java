@@ -2,6 +2,7 @@ package com.pagecallview;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -28,7 +29,10 @@ public class PagecallModule extends ReactContextBaseJavaModule {
     uiManager.addUIBlock(nativeViewHierarchyManager -> {
       PagecallWebView webView = (PagecallWebView) nativeViewHierarchyManager.resolveView(viewID);
       if (webView != null) {
+        Log.d("PagecallModule", "sendMessage: " + message);
         webView.sendMessage(message);
+      } else {
+        Log.e("PagecallModule", "webView could not be resolved with viewID " + viewID);
       }
     });
   }
