@@ -11,7 +11,12 @@ class PagecallViewManager: RCTViewManager {
     }
 
     @objc override static func requiresMainQueueSetup() -> Bool {
-        return false
+        return true
+    }
+
+    override init() {
+        super.init()
+        PagecallWebView.configure()
     }
 
     @objc(sendMessage:message:)
@@ -104,7 +109,7 @@ class PagecallView: UIView, PagecallDelegate, UIDocumentPickerDelegate {
                   }
               }
             """
-            webView.evaluateJavaScript(javaScriptCode) { result, error in
+            webView.evaluateJavaScript(javaScriptCode) { _, error in
                 if let error = error {
                     print("[PagecallView] Failed to set value", error)
                 }
