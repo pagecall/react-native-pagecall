@@ -15,6 +15,7 @@ import {
   useEffect,
   useCallback,
   useMemo,
+  useState,
 } from 'react';
 
 const LINKING_ERROR =
@@ -149,50 +150,72 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
 
     useEffect(() => {
       mountCount += 1;
+      console.log('PagecallView mounted', mountCount);
       if (mountCount > 1)
         console.error(
           'PagecallView is not supposed to be rendered twice or more at the same time. Please make sure the previous view is unmounted.'
         );
       return () => {
-        NativeModules.PagecallViewManager?.dispose?.();
         mountCount -= 1;
+        console.log('PagecallView unmounted', mountCount);
+        if (mountCount === 0) {
+          console.log('PagecallView is being disposed');
+          NativeModules.PagecallViewManager?.dispose?.();
+        }
       };
     }, []);
 
-    const onNativeEvent = useCallback(
-      (event) => {
-        const data = event.nativeEvent;
-        if (!data) return;
-        switch (data.type) {
-          case 'load': {
-            onLoad?.();
-            return;
-          }
-          case 'error': {
-            onError?.(new Error(data.message));
-            return;
-          }
-          case 'terminate': {
-            onTerminate?.(data.reason);
-            return;
-          }
-          case 'message': {
-            onMessage?.(data.message);
-            return;
-          }
-          case 'event': {
-            onEvent?.(data.payload);
-          }
+    const [isLoaded, setLoaded] = useState(false);
+
+    const eventHandlers = {
+      onLoad,
+      onError,
+      onTerminate,
+      onMessage,
+      onEvent,
+    };
+    const eventHandlersRef = useRef(eventHandlers);
+    eventHandlersRef.current = eventHandlers;
+
+    const onNativeEvent = useCallback((event) => {
+      const currentEventHandlers = eventHandlersRef.current;
+      const data = event.nativeEvent;
+      if (!data) return;
+      console.debug('PagecallWebView nativeEvent', data);
+      switch (data.type) {
+        case 'load': {
+          currentEventHandlers.onLoad?.();
+          setLoaded(true);
+          return;
         }
-      },
-      [onLoad, onError, onTerminate, onMessage, onEvent]
-    );
+        case 'error': {
+          currentEventHandlers.onError?.(new Error(data.message));
+          return;
+        }
+        case 'terminate': {
+          currentEventHandlers.onTerminate?.(data.reason);
+          return;
+        }
+        case 'message': {
+          currentEventHandlers.onMessage?.(data.message);
+          return;
+        }
+        case 'event': {
+          currentEventHandlers.onEvent?.(data.payload);
+        }
+      }
+    }, []);
+
+    const stringifiedValue = useMemo(() => {
+      if (!isLoaded || !value) return undefined;
+      return JSON.stringify(value);
+    }, [isLoaded, value]);
 
     return (
       <PagecallViewView
         {...props}
         uri={uri}
-        stringifiedValue={JSON.stringify(value)}
+        stringifiedValue={stringifiedValue}
         ref={viewRef}
         style={props.style}
         onNativeEvent={onNativeEvent}
