@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -23,6 +24,7 @@ import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.pagecall.PagecallWebView;
 import com.pagecall.TerminationReason;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,9 +50,13 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
     return REACT_CLASS;
   }
 
+  private static Integer instanceCount = 0;
+
   @Override
   @NonNull
   public View createViewInstance(ThemedReactContext reactContext) {
+    instanceCount += 1;
+    Log.d("PagecallViewManager", "createViewInstance " + instanceCount);
     PagecallWebView.setWebContentsDebuggingEnabled(true);
     this.webView = new PagecallWebView(reactContext.getCurrentActivity());
     this.webView.setListener(this);
@@ -59,6 +65,8 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
 
   @Override
   public void onDropViewInstance(View view) {
+    instanceCount -= 1;
+    Log.d("PagecallViewManager", "dropViewInstance " + instanceCount);
     super.onDropViewInstance(view);
     if (view instanceof PagecallWebView) {
       ((PagecallWebView) view).destroy();
@@ -134,10 +142,35 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
         writableMap.putDouble(key, (Double) value);
       } else if (value instanceof JSONObject) {
         writableMap.putMap(key, this.jsonObjectToWritableMap((JSONObject) value));
+      } else if (value instanceof JSONArray) {
+        writableMap.putArray(key, jsonArrayToWritableArray((JSONArray) value));
       }
     }
 
     return writableMap;
+  }
+
+  private WritableArray jsonArrayToWritableArray(JSONArray jsonArray) throws JSONException {
+    WritableArray writableArray = Arguments.createArray();
+
+    for (int i = 0; i < jsonArray.length(); i++) {
+      Object value = jsonArray.get(i);
+      if (value instanceof String) {
+        writableArray.pushString((String) value);
+      } else if (value instanceof Boolean) {
+        writableArray.pushBoolean((Boolean) value);
+      } else if (value instanceof Integer) {
+        writableArray.pushInt((Integer) value);
+      } else if (value instanceof Double) {
+        writableArray.pushDouble((Double) value);
+      } else if (value instanceof JSONObject) {
+        writableArray.pushMap(jsonObjectToWritableMap((JSONObject) value));
+      } else if (value instanceof JSONArray) {
+        writableArray.pushArray(jsonArrayToWritableArray((JSONArray) value));
+      }
+    }
+
+    return writableArray;
   }
 
   private WritableMap createNativeEvent(String type, JSONObject payload) throws JSONException {
@@ -160,6 +193,7 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
 
   @Override
   public void onLoaded() {
+    Log.d("PagecallViewManager", "onLoaded");
     reactContext
       .getJSModule(RCTEventEmitter.class)
       .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("load"));
@@ -167,6 +201,7 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
 
   @Override
   public void onMessage(String message) {
+    Log.d("PagecallViewManager", "onMessage: " + message);
     reactContext
       .getJSModule(RCTEventEmitter.class)
       .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("message", "message", message));
@@ -174,6 +209,7 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
 
   @Override
   public void onEvent(JSONObject payload) {
+    Log.d("PagecallViewManager", "onEvent: " + payload.toString());
     try {
       reactContext
         .getJSModule(RCTEventEmitter.class)
@@ -186,6 +222,7 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
   @Override
   public void onTerminated(TerminationReason terminationReason) {
     String reason = terminationReason.getValue();
+    Log.d("PagecallViewManager", "onTerminated: " + reason);
     if (terminationReason == TerminationReason.OTHER) {
       reason = terminationReason.getOtherReason();
     }
@@ -197,6 +234,7 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
 
   @Override
   public void onError(WebResourceError error) {
+    Log.d("PagecallViewManager", "onError");
     reactContext
       .getJSModule(RCTEventEmitter.class)
       .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("error", "message", error.getDescription().toString()));
