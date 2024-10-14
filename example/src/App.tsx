@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow, react-native/no-inline-styles */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRef } from 'react';
 
@@ -43,6 +44,7 @@ const styles = StyleSheet.create({
 export default function App() {
   const viewRef = useRef<PagecallViewRef>(null);
   const [roomId, setRoomId] = useState('');
+  const [accessToken, setAccessToken] = useState('');
   const [query, setQuery] = useState('');
   const [value, setValue] = useState<{ [key: string]: unknown }>({});
   const [mode, setMode] = useState<'meet' | 'replay' | null>(null);
@@ -60,28 +62,30 @@ export default function App() {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
+
   useEffect(() => {
-    AsyncStorage.getItem('roomId').then((roomId) => {
-      if (!roomId) return;
-      setRoomId(roomId);
-    });
-    AsyncStorage.getItem('query').then((query) => {
-      if (!query) return;
-      setQuery(query);
+    Promise.all(
+      ['roomId', 'accessToken', 'query'].map((key) => AsyncStorage.getItem(key))
+    ).then(([roomId, accessToken, query]) => {
+      if (roomId) setRoomId(roomId);
+      if (accessToken) setAccessToken(accessToken);
+      if (query) setQuery(query);
     });
   }, []);
 
   useEffect(() => {
     if (!mode) return;
+    const remember = (key: string, value: string) =>
+      (value
+        ? AsyncStorage.setItem(key, value)
+        : AsyncStorage.removeItem(key)
+      ).catch(console.error);
     Promise.all([
-      roomId
-        ? AsyncStorage.setItem('roomId', roomId)
-        : AsyncStorage.removeItem('roomId'),
-      query
-        ? AsyncStorage.setItem('query', query)
-        : AsyncStorage.removeItem('query'),
-    ]).catch(console.error);
-  }, [roomId, query, mode]);
+      remember('roomId', roomId),
+      remember('accessToken', accessToken),
+      remember('query', query),
+    ]);
+  }, [mode, roomId, accessToken, query]);
 
   const handleButtonClick = useCallback(() => {
     if (!viewRef.current) return;
@@ -130,6 +134,13 @@ export default function App() {
             style={styles.textInput}
             autoCapitalize="none"
           />
+          <Text>Access Token</Text>
+          <TextInput
+            value={accessToken}
+            onChangeText={setAccessToken}
+            style={styles.textInput}
+            autoCapitalize="none"
+          />
           <Text>Query (Only for debug)</Text>
           <TextInput
             value={query}
@@ -167,6 +178,7 @@ export default function App() {
       <PagecallView
         roomId={roomId}
         mode={mode}
+        accessToken={accessToken}
         queryParams={queryParams}
         style={{ flex: 1 }}
         ref={viewRef}
