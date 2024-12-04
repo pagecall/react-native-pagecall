@@ -74,7 +74,7 @@ allprojects {
 
 dependencies {
     ...
-    implementation 'com.pagecall:pagecall-android-sdk:0.0.41'
+    implementation 'com.pagecall:pagecall-android-sdk:0.0.43'
 }
 
 ```
