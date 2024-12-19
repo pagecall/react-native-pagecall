@@ -23,6 +23,7 @@ import com.facebook.react.uimanager.events.RCTEventEmitter;
 
 import com.pagecall.PagecallWebView;
 import com.pagecall.TerminationReason;
+import com.pagecall.PagecallError;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -233,10 +234,10 @@ public class PagecallViewManager extends SimpleViewManager<View> implements Acti
   }
 
   @Override
-  public void onError(WebResourceError error) {
+  public void onError(PagecallError error) {
     Log.d("PagecallViewManager", "onError");
     reactContext
       .getJSModule(RCTEventEmitter.class)
-      .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("error", "message", error.getDescription().toString()));
+      .receiveEvent(webView.getId(), "onNativeEvent", createNativeEvent("error", "message", error.getMessage()));
   }
 }
