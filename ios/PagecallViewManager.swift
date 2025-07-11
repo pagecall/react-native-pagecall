@@ -56,6 +56,10 @@ class PagecallView: UIView, PagecallDelegate, UIDocumentPickerDelegate {
     func pagecallDidReceive(_ view: PagecallWebView, event: [String: Any]) {
         self.onNativeEvent?(["type": "event", "payload": event])
     }
+  
+    func pagecallDidLoseAudioSession() {
+        self.onNativeEvent?(["type": "audioSessionLost"])
+    }
 
     private var downloadedUrl: URL?
     func pagecall(_ view: PagecallWebView, requestDownloadFor url: URL) {

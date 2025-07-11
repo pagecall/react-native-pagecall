@@ -186,6 +186,9 @@ export default function App() {
         onLoad={() => setLoading(false)}
         onTerminate={() => setMode(null)}
         onMessage={setLatestMessage}
+        onAudioSessionLost={() => {
+          setLatestMessage('Audio session lost');
+        }}
       />
       {latestMessage && (
         <View style={styles.messageBox}>
