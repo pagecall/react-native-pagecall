@@ -60,6 +60,7 @@ type PagecallExternalProps = {
    * Called when a local event occurs in the meeting room.
    */
   onEvent?: (payload: unknown) => void;
+  onAudioSessionLost?: () => void;
 };
 
 export type PagecallViewProps = PagecallSharedProps & PagecallExternalProps;
@@ -83,6 +84,9 @@ type NativeEventPayload =
   | {
       type: 'event';
       payload: { [key: string]: unknown };
+    }
+  | {
+      type: 'audioSessionLost';
     };
 
 type PagecallInternalProps = {
@@ -120,6 +124,7 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       onTerminate,
       onMessage,
       onEvent,
+      onAudioSessionLost,
       ...props
     },
     ref
@@ -173,6 +178,7 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       onTerminate,
       onMessage,
       onEvent,
+      onAudioSessionLost,
     };
     const eventHandlersRef = useRef(eventHandlers);
     eventHandlersRef.current = eventHandlers;
@@ -202,6 +208,11 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
         }
         case 'event': {
           currentEventHandlers.onEvent?.(data.payload);
+          return;
+        }
+        case 'audioSessionLost': {
+          currentEventHandlers.onAudioSessionLost?.();
+          return;
         }
       }
     }, []);
