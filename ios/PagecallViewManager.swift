@@ -23,10 +23,11 @@ class PagecallViewManager: RCTViewManager {
 
     @objc(dispose)
     func dispose() {
-        DispatchQueue.main.async {
-            self.pagecallView?.dispose()
-            self.pagecallView = nil
-        }
+      guard let pagecallView else { return }
+      pagecallView.dispose {
+        guard self.pagecallView == pagecallView else { return }
+        self.pagecallView = nil
+      }
     }
 }
 
@@ -131,13 +132,18 @@ class PagecallView: UIView, PagecallDelegate, UIDocumentPickerDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func dispose() {
+    func dispose(completion: (() -> Void)?) {
         self.stopListen?()
         self.stopListen = nil
         webView.cleanup()
+        guard let completion = completion else { return }
+        // TODO: callback from `webView.cleanup`
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+          completion()
+        }
     }
 
     deinit {
-        dispose()
+      dispose(completion: nil)
     }
 }
