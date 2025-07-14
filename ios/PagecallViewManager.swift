@@ -56,7 +56,7 @@ class PagecallView: UIView, PagecallDelegate, UIDocumentPickerDelegate {
     func pagecallDidReceive(_ view: PagecallWebView, event: [String: Any]) {
         self.onNativeEvent?(["type": "event", "payload": event])
     }
-  
+
     func pagecallDidLoseAudioSession() {
         self.onNativeEvent?(["type": "audioSessionLost"])
     }
@@ -100,7 +100,7 @@ class PagecallView: UIView, PagecallDelegate, UIDocumentPickerDelegate {
 
     @objc var stringifiedValue: String = "{}" {
         didSet {
-            var javaScriptCode = """
+            let javaScriptCode = """
               if(PagecallUI) {
                   const values = JSON.parse('\(stringifiedValue)');
                   for (const key in values) {
@@ -108,7 +108,7 @@ class PagecallView: UIView, PagecallDelegate, UIDocumentPickerDelegate {
                   }
               }
             """
-            webView.evaluateJavaScript(javaScriptCode) { result, error in
+            webView.evaluateJavaScript(javaScriptCode) { _, error in
                 if let error = error {
                     print("[PagecallView] Failed to set value", error)
                 }
