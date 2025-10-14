@@ -1288,7 +1288,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-pagecall (2.0.22):
+  - react-native-pagecall (2.0.23):
     - Pagecall (= 0.0.31)
     - RCT-Folly
     - RCTRequired
@@ -1843,7 +1843,7 @@ SPEC CHECKSUMS:
   React-logger: dbca7bdfd4aa5ef69431362bde6b36d49403cb20
   React-Mapbuffer: 6efad4a606c1fae7e4a93385ee096681ef0300dc
   React-microtasksnativemodule: a645237a841d733861c70b69908ab4a1707b52ad
-  react-native-pagecall: 0531aeebe569aa201d83c8a246040da2520293bf
+  react-native-pagecall: 524fd784f6c25338398aba6898a2db6b4ef89c7f
   React-nativeconfig: 8efdb1ef1e9158c77098a93085438f7e7b463678
   React-NativeModulesApple: 958d4f6c5c2ace4c0f427cf7ef82e28ae6538a22
   React-perflogger: 9b4f13c0afe56bc7b4a0e93ec74b1150421ee22d
