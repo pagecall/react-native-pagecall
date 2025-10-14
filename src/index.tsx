@@ -145,9 +145,9 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       sendMessage: (message: string) => {
         const view = viewRef.current;
         if (view) {
-          const viewID = findNodeHandle(view);
-          if (viewID) {
-            NativeModules.PagecallViewManager?.sendMessage?.(viewID, message);
+          const viewId = findNodeHandle(view);
+          if (viewId) {
+            NativeModules.PagecallViewManager?.sendMessage?.(viewId, message);
           }
         }
       },
@@ -160,13 +160,18 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
         console.error(
           'PagecallView is not supposed to be rendered twice or more at the same time. Please make sure the previous view is unmounted.'
         );
+      const view = viewRef.current;
+      const viewId = view && findNodeHandle(view);
       return () => {
         mountCount -= 1;
         console.log('PagecallView unmounted', mountCount);
-        if (mountCount === 0) {
-          console.log('PagecallView is being disposed');
-          NativeModules.PagecallViewManager?.dispose?.();
+        if (mountCount > 0) return;
+        if (!viewId) {
+          console.warn('PagecallView does not have viewId');
+          return;
         }
+        console.log('PagecallView is being disposed');
+        NativeModules.PagecallViewManager?.dispose?.(viewId);
       };
     }, []);
 

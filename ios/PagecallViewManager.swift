@@ -2,11 +2,8 @@ import Pagecall
 
 @objc(PagecallViewManager)
 class PagecallViewManager: RCTViewManager {
-    var pagecallView: PagecallView?
-
     override func view() -> (PagecallView) {
         let view = PagecallView()
-        self.pagecallView = view
         return view
     }
 
@@ -14,19 +11,24 @@ class PagecallViewManager: RCTViewManager {
         return false
     }
 
-    @objc(sendMessage:message:)
-    func sendMessage(_ viewID: NSNumber, message: String) {
-        DispatchQueue.main.async {
-            self.pagecallView?.webView.sendMessage(message: message, completionHandler: nil)
-        }
+    private func getView(_ viewID: NSNumber) -> PagecallView? {
+      let view = self.bridge.uiManager.view(forReactTag: viewID) as? PagecallView
+      return view
     }
 
-    @objc(dispose)
-    func dispose() {
-      guard let pagecallView else { return }
-      pagecallView.dispose {
-        guard self.pagecallView == pagecallView else { return }
-        self.pagecallView = nil
+    @objc(sendMessage:message:)
+    func sendMessage(_ viewID: NSNumber, message: String) {
+      DispatchQueue.main.async {
+        guard let view = self.getView(viewID) else { return }
+        view.webView.sendMessage(message: message, completionHandler: nil)
+      }
+    }
+
+    @objc(dispose:)
+    func dispose(_ viewID: NSNumber) {
+      DispatchQueue.main.async {
+        guard let view = self.getView(viewID) else { return }
+        view.dispose()
       }
     }
 }
@@ -132,18 +134,9 @@ class PagecallView: UIView, PagecallDelegate, UIDocumentPickerDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func dispose(completion: (() -> Void)?) {
+    func dispose() {
         self.stopListen?()
         self.stopListen = nil
         webView.cleanup()
-        guard let completion = completion else { return }
-        // TODO: callback from `webView.cleanup`
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-          completion()
-        }
-    }
-
-    deinit {
-      dispose(completion: nil)
     }
 }
