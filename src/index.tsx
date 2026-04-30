@@ -165,7 +165,6 @@ export const PagecallView = forwardRef<PagecallViewRef, PagecallViewProps>(
       return () => {
         mountCount -= 1;
         console.log('PagecallView unmounted', mountCount);
-        if (mountCount > 0) return;
         if (!viewId) {
           console.warn('PagecallView does not have viewId');
           return;
